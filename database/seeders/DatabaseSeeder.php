@@ -46,6 +46,7 @@ use App\Models\CoachingNote;
 use App\Models\AuditLog;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
@@ -56,13 +57,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         if (User::count() > 0) {
-            $this->command->info('Database already seeded. Skipping.');
+            $this->command->warn('Database already has data. Skipping seeder.');
+            $this->command->info('To re-seed from scratch, run: php artisan migrate:fresh --seed');
             return;
         }
 
+        $this->command->info('Starting database seeding...');
+        $startTime = microtime(true);
+
+        DB::transaction(function () {
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // USERS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating users...');
         $admin = User::firstOrCreate(
             ['email' => 'admin@ayscallcenter.com'],
             ['name' => 'System Admin', 'first_name' => 'System', 'last_name' => 'Admin', 'phone' => '+255700000001', 'role' => 'admin', 'status' => 'active', 'password' => Hash::make('password'), 'email_verified_at' => now()]
@@ -86,6 +93,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Arusha Branch', 'code' => 'ARU-01', 'address' => 'Plot 45, Themi', 'city' => 'Arusha', 'phone' => '+255272000002', 'timezone' => 'Africa/Dar_es_Salaam', 'is_active' => true],
             ['name' => 'Mwanza Branch', 'code' => 'MWZ-01', 'address' => 'Plot 78, Capri Point', 'city' => 'Mwanza', 'phone' => '+255282000003', 'timezone' => 'Africa/Dar_es_Salaam', 'is_active' => true],
         ];
+        $this->command->info('  → Creating branches...');
         foreach ($branches as $b) Branch::create($b);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -101,6 +109,7 @@ class DatabaseSeeder extends Seeder
             ['branch_id' => 2, 'name' => 'Sales', 'code' => 'SAL-ARU', 'is_active' => true],
             ['branch_id' => 3, 'name' => 'Customer Service', 'code' => 'CS-MWZ', 'is_active' => true],
         ];
+        $this->command->info('  → Creating departments...');
         foreach ($departments as $d) Department::create($d);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -118,6 +127,7 @@ class DatabaseSeeder extends Seeder
             ['department_id' => 5, 'title' => 'QA Evaluator', 'code' => 'QAE', 'level' => 'senior_agent', 'min_salary' => 700000, 'max_salary' => 1200000, 'is_active' => true],
             ['department_id' => 6, 'title' => 'Call Center Agent', 'code' => 'CCA-A', 'level' => 'agent', 'min_salary' => 350000, 'max_salary' => 600000, 'is_active' => true],
         ];
+        $this->command->info('  → Creating positions...');
         foreach ($positions as $p) Position::create($p);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -132,11 +142,13 @@ class DatabaseSeeder extends Seeder
             ['department_id' => 3, 'name' => 'Tech Team A', 'is_active' => true],
             ['department_id' => 6, 'name' => 'Arusha Team 1', 'is_active' => true],
         ];
+        $this->command->info('  → Creating teams...');
         foreach ($teams as $t) Team::create($t);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // WORKING HOUR POLICIES
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating working hour policies...');
         WorkingHourPolicy::create(['name' => 'Standard 8hr', 'hours_per_day' => 8, 'days_per_week' => 5, 'week_start' => 'mon', 'grace_minutes' => 10, 'overtime_after_minutes' => 480, 'is_default' => true]);
         WorkingHourPolicy::create(['name' => 'Shift 9hr (with 1hr break)', 'hours_per_day' => 8, 'days_per_week' => 6, 'week_start' => 'mon', 'grace_minutes' => 5, 'overtime_after_minutes' => 540, 'is_default' => false]);
 
@@ -155,11 +167,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Christmas Day', 'date' => now()->year . '-12-25', 'is_recurring' => true, 'branch_id' => null],
             ['name' => 'Boxing Day', 'date' => now()->year . '-12-26', 'is_recurring' => true, 'branch_id' => null],
         ];
+        $this->command->info('  → Creating holidays...');
         foreach ($holidays as $h) Holiday::create($h);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // COMPANY POLICIES
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating company policies...');
         CompanyPolicy::create(['title' => 'Code of Conduct', 'category' => 'conduct', 'body' => 'All employees must adhere to the company code of conduct...', 'version' => 1, 'effective_from' => now()->startOfYear(), 'is_active' => true]);
         CompanyPolicy::create(['title' => 'Leave Policy', 'category' => 'leave', 'body' => 'Annual leave entitlement is 21 days per year...', 'version' => 2, 'effective_from' => now()->startOfYear(), 'is_active' => true]);
         CompanyPolicy::create(['title' => 'Remote Work Policy', 'category' => 'other', 'body' => 'Remote work is allowed for specific roles...', 'version' => 1, 'effective_from' => now()->startOfYear(), 'is_active' => true]);
@@ -174,6 +188,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Night Shift', 'code' => 'NS', 'start_time' => '22:00', 'end_time' => '06:00', 'crosses_midnight' => true, 'break_minutes' => 60, 'color' => '#8B5CF6', 'is_night_shift' => true, 'night_allowance' => 50000, 'is_active' => true],
             ['name' => 'Day Shift', 'code' => 'DS', 'start_time' => '08:00', 'end_time' => '17:00', 'crosses_midnight' => false, 'break_minutes' => 60, 'color' => '#10B981', 'is_night_shift' => false, 'is_active' => true],
         ];
+        $this->command->info('  → Creating shifts...');
         foreach ($shifts as $s) Shift::create($s);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -187,6 +202,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Compassionate Leave', 'code' => 'CL', 'days_per_year' => 3, 'is_paid' => true, 'carry_forward' => false, 'max_carry_forward' => 0, 'requires_attachment' => false, 'gender_restriction' => 'any', 'is_active' => true],
             ['name' => 'Unpaid Leave', 'code' => 'UL', 'days_per_year' => 30, 'is_paid' => false, 'carry_forward' => false, 'max_carry_forward' => 0, 'requires_attachment' => false, 'gender_restriction' => 'any', 'is_active' => true],
         ];
+        $this->command->info('  → Creating leave types...');
         foreach ($leaveTypes as $lt) LeaveType::create($lt);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -202,6 +218,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'SHIF (Health Insurance)', 'code' => 'SHIF', 'type' => 'deduction', 'calc_type' => 'percent_of_basic', 'value' => 5, 'is_taxable' => false, 'is_statutory' => true, 'is_active' => true],
             ['name' => 'SDL (Skills Development Levy)', 'code' => 'SDL', 'type' => 'deduction', 'calc_type' => 'percent_of_basic', 'value' => 2, 'is_taxable' => false, 'is_statutory' => true, 'is_active' => true],
         ];
+        $this->command->info('  → Creating salary components...');
         foreach ($components as $c) SalaryComponent::create($c);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -214,6 +231,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'CSAT Score', 'code' => 'csat', 'unit' => 'score', 'direction' => 'higher_better', 'weight' => 25, 'applies_to' => 'agent', 'is_active' => true],
             ['name' => 'Conversions', 'code' => 'conversions', 'unit' => 'count', 'direction' => 'higher_better', 'weight' => 20, 'applies_to' => 'agent', 'is_active' => true],
         ];
+        $this->command->info('  → Creating KPIs...');
         foreach ($kpis as $k) Kpi::create($k);
 
         // KPI Targets (company-wide for current year)
@@ -229,6 +247,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // QA EVALUATION FORM
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating QA evaluation form...');
         $qaForm = QualityEvaluationForm::create([
             'name' => 'Standard Call Evaluation',
             'description' => 'Standard QA form for evaluating call center agent calls',
@@ -251,6 +270,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // ONBOARDING CHECKLIST
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating onboarding checklist...');
         $checklist = OnboardingChecklist::create([
             'name' => 'Standard New Hire Checklist',
             'is_default' => true,
@@ -286,6 +306,7 @@ class DatabaseSeeder extends Seeder
         $posIds = [1, 1, 1, 2, 3, 5, 5, 6, 7, 7, 6, 8, 9, 10, 10, 10, 1, 5, 7, 2];
         $salaries = [450000, 450000, 450000, 650000, 950000, 480000, 480000, 1100000, 500000, 500000, 1100000, 1200000, 800000, 420000, 420000, 420000, 450000, 480000, 500000, 650000];
 
+        $this->command->info('  → Creating 30 employees with salaries, contracts, bank accounts...');
         $employees = [];
         for ($i = 0; $i < 30; $i++) {
             $fn = $firstNames[$i];
@@ -375,6 +396,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        $this->command->info('  → Setting department managers & team leads...');
         // Set department managers & team leads
         Department::where('id', 1)->update(['manager_employee_id' => 5]);
         Department::where('id', 2)->update(['manager_employee_id' => 8]);
@@ -386,6 +408,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // SHIFT ASSIGNMENTS (last 7 days)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating shift assignments (7 days)...');
         $activeEmps = Employee::where('employment_status', 'active')->get();
         for ($d = 0; $d < 7; $d++) {
             $date = Carbon::now()->subDays($d)->toDateString();
@@ -399,6 +422,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        $this->command->info('  → Creating attendance records (7 days)...');
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // ATTENDANCE RECORDS (last 7 days)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -444,11 +468,13 @@ class DatabaseSeeder extends Seeder
             ['employee_id' => 20, 'leave_type_id' => 1, 'start_date' => now()->addDays(14), 'end_date' => now()->addDays(20), 'days' => 7, 'reason' => 'Annual leave', 'status' => 'pending', 'recorded_by' => $admin->id],
             ['employee_id' => 9, 'leave_type_id' => 6, 'start_date' => now()->subDays(5), 'end_date' => now()->subDays(3), 'days' => 3, 'reason' => 'Personal emergency', 'status' => 'rejected', 'decided_by' => $admin->id, 'decided_at' => now()->subDays(6), 'decision_note' => 'Insufficient notice', 'recorded_by' => $admin->id],
         ];
+        $this->command->info('  → Creating leave requests...');
         foreach ($leaveRequests as $lr) LeaveRequest::create($lr);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // AGENT DAILY STATS (last 30 days for first 15 agents)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating agent daily stats (30 days × 15 agents)...');
         $agentEmps = Employee::where('employment_status', 'active')->take(15)->get();
         for ($d = 0; $d < 30; $d++) {
             $date = Carbon::now()->subDays($d);
@@ -490,6 +516,7 @@ class DatabaseSeeder extends Seeder
             ['title' => 'QA Evaluator', 'department_id' => 5, 'position_id' => 9, 'description' => 'Evaluate call quality and provide feedback', 'requirements' => 'Call center experience, attention to detail', 'openings' => 1, 'employment_type' => 'full_time', 'salary_range_min' => 700000, 'salary_range_max' => 1200000, 'status' => 'on_hold', 'opened_at' => now()->subDays(20), 'created_by' => $admin->id],
             ['title' => 'Call Center Agent - Arusha', 'department_id' => 6, 'position_id' => 10, 'description' => 'Handle customer calls for Arusha branch', 'requirements' => 'Good communication, Swahili and English', 'openings' => 3, 'employment_type' => 'full_time', 'salary_range_min' => 350000, 'salary_range_max' => 600000, 'status' => 'open', 'opened_at' => now()->subDays(7), 'created_by' => $admin->id],
         ];
+        $this->command->info('  → Creating job positions...');
         foreach ($jobs as $j) JobPosition::create($j);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -502,6 +529,7 @@ class DatabaseSeeder extends Seeder
         ];
         $stages = ['applied', 'applied', 'screening', 'screening', 'interview', 'interview', 'offer', 'hired', 'rejected', 'applied'];
         $sources = ['referral', 'online', 'walk_in', 'agency', 'online'];
+        $this->command->info('  → Creating applicants...');
         for ($i = 0; $i < 15; $i++) {
             Applicant::create([
                 'job_position_id' => ($i % 5) + 1,
@@ -520,6 +548,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // INTERVIEWS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating interviews...');
         Interview::create(['applicant_id' => 5, 'round' => 1, 'type' => 'phone', 'scheduled_at' => now()->addDays(2), 'duration_minutes' => 30, 'interviewer_user_id' => $hrManager->id, 'location' => 'Phone']);
         Interview::create(['applicant_id' => 6, 'round' => 1, 'type' => 'onsite', 'scheduled_at' => now()->addDays(3), 'duration_minutes' => 60, 'interviewer_user_id' => $hrManager->id, 'location' => 'DSM HQ - Room A']);
         Interview::create(['applicant_id' => 7, 'round' => 1, 'type' => 'video', 'scheduled_at' => now()->subDays(2), 'duration_minutes' => 45, 'interviewer_user_id' => $qaLead->id, 'status' => 'completed', 'score' => 78, 'feedback' => 'Good communication, needs more product knowledge']);
@@ -529,6 +558,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // ONBOARDING (for hired applicant -> employee)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating onboarding data...');
         $onboarding = EmployeeOnboarding::create([
             'employee_id' => 30,
             'checklist_id' => $checklist->id,
@@ -548,6 +578,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // PAYROLL RUN + PAYSLIPS (last month)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating payroll run & payslips...');
         $lastMonth = now()->subMonth();
         $run = PayrollRun::create([
             'period_year' => $lastMonth->year,
@@ -624,6 +655,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // BONUSES & COMMISSIONS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating bonuses & commissions...');
         Bonus::create(['employee_id' => 4, 'period_year' => $lastMonth->year, 'period_month' => $lastMonth->month, 'amount' => 100000, 'reason' => 'Top performer', 'created_by' => $admin->id]);
         Bonus::create(['employee_id' => 8, 'period_year' => $lastMonth->year, 'period_month' => $lastMonth->month, 'amount' => 75000, 'reason' => 'Best team lead', 'created_by' => $admin->id]);
         Bonus::create(['employee_id' => 11, 'period_year' => $lastMonth->year, 'period_month' => $lastMonth->month, 'amount' => 50000, 'reason' => 'Perfect attendance', 'created_by' => $admin->id]);
@@ -635,6 +667,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // PERFORMANCE EVALUATIONS (last month)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating performance evaluations...');
         $allKpis = Kpi::where('is_active', true)->get();
         foreach ($activeEmps->take(20) as $emp) {
             $kpiScores = [];
@@ -663,6 +696,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // QA EVALUATIONS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating QA evaluations...');
         $formCriteria = $qaForm->criteria;
         foreach ($activeEmps->take(10) as $emp) {
             $scores = [];
@@ -693,6 +727,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // COACHING NOTES
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating coaching notes...');
         CoachingNote::create([
             'employee_id' => 3,
             'quality_evaluation_id' => 1,
@@ -723,6 +758,7 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // AUD LOGS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        $this->command->info('  → Creating audit logs...');
         $auditLogs = [
             ['user_id' => $admin->id, 'action' => 'create', 'auditable_type' => 'App\\Models\\Employee', 'auditable_id' => 1, 'occurred_at' => now()->subDays(30), 'new_values' => ['first_name' => 'Asha', 'last_name' => 'Mwangi'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
             ['user_id' => $admin->id, 'action' => 'create', 'auditable_type' => 'App\\Models\\Employee', 'auditable_id' => 2, 'occurred_at' => now()->subDays(29), 'new_values' => ['first_name' => 'John', 'last_name' => 'Komba'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
@@ -734,5 +770,10 @@ class DatabaseSeeder extends Seeder
             ['user_id' => $admin->id, 'action' => 'delete', 'auditable_type' => 'App\\Models\\Employee', 'auditable_id' => 99, 'occurred_at' => now()->subDays(2), 'old_values' => ['first_name' => 'Test'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
         ];
         foreach ($auditLogs as $al) AuditLog::create($al);
+        }); // end DB::transaction
+
+        $elapsed = round(microtime(true) - $startTime, 2);
+        $this->command->info("✓ Database seeded successfully in {$elapsed}s");
+        $this->command->info('  Login: admin@ayscallcenter.com / password');
     }
 }
