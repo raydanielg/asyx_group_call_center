@@ -87,6 +87,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/shifts/planner', [App\Http\Controllers\ShiftController::class, 'planner'])->name('shifts.planner');
     Route::post('/shifts/assign', [App\Http\Controllers\ShiftController::class, 'assign'])->name('shifts.assign');
     Route::post('/shifts/unassign', [App\Http\Controllers\ShiftController::class, 'unassign'])->name('shifts.unassign');
+    Route::post('/shifts/bulk-assign', [App\Http\Controllers\ShiftController::class, 'bulkAssign'])->name('shifts.bulk-assign');
+    Route::post('/shifts/copy-week', [App\Http\Controllers\ShiftController::class, 'copyWeek'])->name('shifts.copy-week');
+    Route::post('/shifts/clear-week', [App\Http\Controllers\ShiftController::class, 'clearWeek'])->name('shifts.clear-week');
     Route::get('/shifts/rotations', [App\Http\Controllers\ShiftController::class, 'rotations'])->name('shifts.rotations');
     Route::post('/shifts/rotations', [App\Http\Controllers\ShiftController::class, 'rotationsStore'])->name('shifts.rotations.store');
     Route::delete('/shifts/rotations/{rotation}', [App\Http\Controllers\ShiftController::class, 'rotationsDestroy'])->name('shifts.rotations.destroy');
@@ -102,6 +105,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/leave/requests/{leaveRequest}/reject', [App\Http\Controllers\LeaveController::class, 'requestsReject'])->name('leave.requests.reject');
     Route::post('/leave/requests/{leaveRequest}/cancel', [App\Http\Controllers\LeaveController::class, 'requestsCancel'])->name('leave.requests.cancel');
     Route::get('/leave/balances', [App\Http\Controllers\LeaveController::class, 'balances'])->name('leave.balances');
+    Route::get('/leave/employee/{employee}/history', [App\Http\Controllers\LeaveController::class, 'employeeHistory'])->name('leave.employee.history');
 
     // Payroll
     Route::get('/payroll/components', [App\Http\Controllers\PayrollController::class, 'componentsIndex'])->name('payroll.components');
@@ -157,21 +161,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/analytics/data-entry', [App\Http\Controllers\AnalyticsController::class, 'dataEntry'])->name('analytics.data-entry');
     Route::post('/analytics/data-entry', [App\Http\Controllers\AnalyticsController::class, 'dataEntry'])->name('analytics.data-entry.store');
 
-    // Quality
-    Route::get('/quality/forms', [App\Http\Controllers\QualityController::class, 'formsIndex'])->name('quality.forms');
-    Route::post('/quality/forms', [App\Http\Controllers\QualityController::class, 'formsStore'])->name('quality.forms.store');
-    Route::get('/quality/forms/{form}', [App\Http\Controllers\QualityController::class, 'formsShow'])->name('quality.forms.show');
-    Route::post('/quality/forms/{form}/criteria', [App\Http\Controllers\QualityController::class, 'formsStoreCriterion'])->name('quality.forms.criteria.store');
-    Route::delete('/quality/forms/criteria/{criterion}', [App\Http\Controllers\QualityController::class, 'formsDestroyCriterion'])->name('quality.forms.criteria.destroy');
-    Route::delete('/quality/forms/{form}', [App\Http\Controllers\QualityController::class, 'formsDestroy'])->name('quality.forms.destroy');
-    Route::get('/quality/evaluations', [App\Http\Controllers\QualityController::class, 'evaluationsIndex'])->name('quality.evaluations');
-    Route::get('/quality/evaluations/create', [App\Http\Controllers\QualityController::class, 'evaluationsCreate'])->name('quality.evaluations.create');
-    Route::post('/quality/evaluations', [App\Http\Controllers\QualityController::class, 'evaluationsStore'])->name('quality.evaluations.store');
-    Route::get('/quality/evaluations/{evaluation}', [App\Http\Controllers\QualityController::class, 'evaluationsShow'])->name('quality.evaluations.show');
-    Route::get('/quality/coaching', [App\Http\Controllers\QualityController::class, 'coachingIndex'])->name('quality.coaching');
-    Route::get('/quality/coaching/create', [App\Http\Controllers\QualityController::class, 'coachingCreate'])->name('quality.coaching.create');
-    Route::post('/quality/coaching', [App\Http\Controllers\QualityController::class, 'coachingStore'])->name('quality.coaching.store');
-    Route::post('/quality/coaching/{note}/done', [App\Http\Controllers\QualityController::class, 'coachingDone'])->name('quality.coaching.done');
 
     // Reports
     Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');

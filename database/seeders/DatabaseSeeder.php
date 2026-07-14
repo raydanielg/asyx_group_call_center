@@ -39,10 +39,6 @@ use App\Models\Kpi;
 use App\Models\KpiTarget;
 use App\Models\PerformanceEvaluation;
 use App\Models\AgentDailyStat;
-use App\Models\QualityEvaluationForm;
-use App\Models\QualityFormCriterion;
-use App\Models\QualityEvaluation;
-use App\Models\CoachingNote;
 use App\Models\AuditLog;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -243,29 +239,6 @@ class DatabaseSeeder extends Seeder
             ['kpi_id' => 5, 'scope' => 'company', 'period_year' => now()->year, 'target_value' => 150],
         ];
         foreach ($kpiTargets as $kt) KpiTarget::create($kt);
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // QA EVALUATION FORM
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        $this->command->info('  → Creating QA evaluation form...');
-        $qaForm = QualityEvaluationForm::create([
-            'name' => 'Standard Call Evaluation',
-            'description' => 'Standard QA form for evaluating call center agent calls',
-            'max_score' => 100,
-            'is_active' => true,
-        ]);
-
-        $criteria = [
-            ['form_id' => $qaForm->id, 'label' => 'Greeting & Opening', 'weight' => 10, 'max_points' => 10, 'sort_order' => 1],
-            ['form_id' => $qaForm->id, 'label' => 'Verification & Authentication', 'weight' => 10, 'max_points' => 10, 'sort_order' => 2],
-            ['form_id' => $qaForm->id, 'label' => 'Active Listening', 'weight' => 15, 'max_points' => 15, 'sort_order' => 3],
-            ['form_id' => $qaForm->id, 'label' => 'Problem Resolution', 'weight' => 20, 'max_points' => 20, 'sort_order' => 4],
-            ['form_id' => $qaForm->id, 'label' => 'Product Knowledge', 'weight' => 15, 'max_points' => 15, 'sort_order' => 5],
-            ['form_id' => $qaForm->id, 'label' => 'Communication Skills', 'weight' => 10, 'max_points' => 10, 'sort_order' => 6],
-            ['form_id' => $qaForm->id, 'label' => 'Closing & Documentation', 'weight' => 10, 'max_points' => 10, 'sort_order' => 7],
-            ['form_id' => $qaForm->id, 'label' => 'Compliance & Policy', 'weight' => 10, 'max_points' => 10, 'sort_order' => 8],
-        ];
-        foreach ($criteria as $c) QualityFormCriterion::create($c);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // ONBOARDING CHECKLIST
@@ -694,68 +667,6 @@ class DatabaseSeeder extends Seeder
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // QA EVALUATIONS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        $this->command->info('  → Creating QA evaluations...');
-        $formCriteria = $qaForm->criteria;
-        foreach ($activeEmps->take(10) as $emp) {
-            $scores = [];
-            $totalScore = 0;
-            $maxTotal = 0;
-            foreach ($formCriteria as $c) {
-                $pts = rand((int)($c->max_points * 0.6), $c->max_points);
-                $scores[$c->id] = $pts;
-                $totalScore += $pts;
-                $maxTotal += $c->max_points;
-            }
-            $pct = $maxTotal > 0 ? round(($totalScore / $maxTotal) * 100, 2) : 0;
-            $outcome = $pct >= 80 ? 'pass' : ($pct >= 60 ? 'coaching_required' : 'fail');
-            QualityEvaluation::create([
-                'employee_id' => $emp->id,
-                'form_id' => $qaForm->id,
-                'call_reference' => 'CALL-' . now()->year . '-' . str_pad($emp->id, 4, '0', STR_PAD_LEFT),
-                'evaluated_at' => now()->subDays(rand(1, 15)),
-                'evaluator_user_id' => $qaLead->id,
-                'scores' => $scores,
-                'total_score' => $totalScore,
-                'percentage' => $pct,
-                'outcome' => $outcome,
-                'summary' => $outcome === 'pass' ? 'Good call handling' : 'Needs improvement in specific areas',
-            ]);
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // COACHING NOTES
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        $this->command->info('  → Creating coaching notes...');
-        CoachingNote::create([
-            'employee_id' => 3,
-            'quality_evaluation_id' => 1,
-            'note' => 'Agent needs to work on greeting and opening. Ensure proper verification before proceeding.',
-            'action_items' => '1. Review greeting script 2. Practice verification process 3. Shadow senior agent for 2 hours',
-            'follow_up_date' => now()->addDays(7),
-            'status' => 'open',
-            'created_by' => $qaLead->id,
-        ]);
-        CoachingNote::create([
-            'employee_id' => 7,
-            'quality_evaluation_id' => 2,
-            'note' => 'Good product knowledge but needs to improve closing technique.',
-            'action_items' => '1. Attend closing skills workshop 2. Review top 5 closing scripts',
-            'follow_up_date' => now()->addDays(14),
-            'status' => 'open',
-            'created_by' => $qaLead->id,
-        ]);
-        CoachingNote::create([
-            'employee_id' => 10,
-            'note' => 'Consistently late for shift. Discussed importance of punctuality.',
-            'action_items' => '1. Set alarm 2. Arrive 15 min early 3. Review attendance policy',
-            'follow_up_date' => now()->subDays(5),
-            'status' => 'done',
-            'created_by' => $hrManager->id,
-        ]);
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // AUD LOGS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         $this->command->info('  → Creating audit logs...');
@@ -765,7 +676,6 @@ class DatabaseSeeder extends Seeder
             ['user_id' => $hrManager->id, 'action' => 'update', 'auditable_type' => 'App\\Models\\Employee', 'auditable_id' => 1, 'occurred_at' => now()->subDays(15), 'old_values' => ['department_id' => 2], 'new_values' => ['department_id' => 1], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
             ['user_id' => $admin->id, 'action' => 'create', 'auditable_type' => 'App\\Models\\PayrollRun', 'auditable_id' => 1, 'occurred_at' => now()->subDays(10), 'new_values' => ['period' => 'last month'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
             ['user_id' => $admin->id, 'action' => 'approve', 'auditable_type' => 'App\\Models\\PayrollRun', 'auditable_id' => 1, 'occurred_at' => now()->subDays(8), 'old_values' => ['status' => 'processed'], 'new_values' => ['status' => 'approved'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
-            ['user_id' => $qaLead->id, 'action' => 'create', 'auditable_type' => 'App\\Models\\QualityEvaluation', 'auditable_id' => 1, 'occurred_at' => now()->subDays(5), 'new_values' => ['employee_id' => 1], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
             ['user_id' => $hrManager->id, 'action' => 'update', 'auditable_type' => 'App\\Models\\LeaveRequest', 'auditable_id' => 2, 'occurred_at' => now()->subDays(4), 'old_values' => ['status' => 'pending'], 'new_values' => ['status' => 'approved'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
             ['user_id' => $admin->id, 'action' => 'delete', 'auditable_type' => 'App\\Models\\Employee', 'auditable_id' => 99, 'occurred_at' => now()->subDays(2), 'old_values' => ['first_name' => 'Test'], 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0'],
         ];

@@ -170,4 +170,33 @@ class LeaveController extends Controller
 
         return view('leave.balances', compact('employees', 'types', 'year'));
     }
+
+    public function employeeHistory(Request $request, Employee $employee)
+    {
+        $query = LeaveRequest::with(['leaveType', 'decidedBy'])
+            ->where('employee_id', $employee->id)
+            ->orderBy('created_at', 'desc');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $requests = $query->paginate(15);
+        $types = LeaveType::where('is_active', true)->get();
+
+        $year = now()->year;
+        $balances = LeaveBalance::with('leaveType')
+            ->where('employee_id', $employee->id)
+            ->where('year', $year)
+            ->get();
+
+        $stats = [
+            'total' => LeaveRequest::where('employee_id', $employee->id)->count(),
+            'pending' => LeaveRequest::where('employee_id', $employee->id)->where('status', 'pending')->count(),
+            'approved' => LeaveRequest::where('employee_id', $employee->id)->where('status', 'approved')->count(),
+            'rejected' => LeaveRequest::where('employee_id', $employee->id)->where('status', 'rejected')->count(),
+        ];
+
+        return view('leave.history', compact('employee', 'requests', 'types', 'balances', 'stats', 'year'));
+    }
 }

@@ -8,7 +8,6 @@ use App\Models\LeaveRequest;
 use App\Models\PayrollRun;
 use App\Models\JobPosition;
 use App\Models\EmployeeContract;
-use App\Models\CoachingNote;
 use App\Models\AgentDailyStat;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -88,8 +87,6 @@ class HomeController extends Controller
             ->where('probation_end_date', '<=', now()->addDays(30)->toDateString())
             ->count();
         $unapprovedOvertime = AttendanceRecord::where('overtime_minutes', '>', 0)->where('overtime_approved', false)->count();
-        $overdueCoaching = CoachingNote::where('status', 'open')->where('follow_up_date', '<', $today)->count();
-
         // Performance sparkline (avg score per month)
         $perfMonths = [];
         $perfLabels = [];

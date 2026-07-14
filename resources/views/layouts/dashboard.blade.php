@@ -210,20 +210,6 @@
                 </div>
             </div>
 
-            {{-- Quality --}}
-            <div class="sidebar-group">
-                <button onclick="toggleMenu('menu-qual')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('quality*') ? 'active' : '' }}">
-                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>Quality</span>
-                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-qual" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
-                <div id="menu-qual" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('quality*') ? 'open' : '' }}">
-                    <a href="{{ route('quality.forms') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Eval Forms</a>
-                    <a href="{{ route('quality.evaluations') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Evaluations</a>
-                    <a href="{{ route('quality.coaching') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Coaching</a>
-                </div>
-            </div>
-
             {{-- Reports --}}
             <div class="sidebar-group">
                 <button onclick="toggleMenu('menu-rep')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('reports*') ? 'active' : '' }}">

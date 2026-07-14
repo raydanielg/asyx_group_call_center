@@ -11,7 +11,7 @@ class Employee extends Model
 
     protected $fillable = [
         'employee_code', 'first_name', 'middle_name', 'last_name', 'gender',
-        'date_of_birth', 'marital_status', 'national_id', 'photo_path',
+        'date_of_birth', 'marital_status', 'national_id', 'nssf_number', 'tin_number', 'photo_path',
         'email', 'phone', 'alt_phone', 'address', 'city', 'country',
         'branch_id', 'department_id', 'position_id', 'team_id',
         'employment_type', 'hire_date', 'probation_end_date', 'contract_end_date',
@@ -128,16 +128,6 @@ class Employee extends Model
     public function evaluations()
     {
         return $this->hasMany(PerformanceEvaluation::class);
-    }
-
-    public function qualityEvaluations()
-    {
-        return $this->hasMany(QualityEvaluation::class);
-    }
-
-    public function coachingNotes()
-    {
-        return $this->hasMany(CoachingNote::class);
     }
 
     public function fullName()

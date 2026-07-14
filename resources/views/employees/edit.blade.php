@@ -62,6 +62,14 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1">National ID</label>
                 <input type="text" name="national_id" value="{{ old('national_id', $employee->national_id) }}" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-navy-300 focus:ring-2 focus:ring-navy-100 outline-none">
             </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">NSSF Number</label>
+                <input type="text" name="nssf_number" value="{{ old('nssf_number', $employee->nssf_number) }}" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-navy-300 focus:ring-2 focus:ring-navy-100 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">TIN Number</label>
+                <input type="text" name="tin_number" value="{{ old('tin_number', $employee->tin_number) }}" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-navy-300 focus:ring-2 focus:ring-navy-100 outline-none">
+            </div>
         </div>
     </div>
 

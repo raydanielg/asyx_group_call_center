@@ -22,4 +22,9 @@ class LeaveRequest extends Model
     {
         return $this->belongsTo(LeaveType::class);
     }
+
+    public function decidedBy()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'decided_by');
+    }
 }

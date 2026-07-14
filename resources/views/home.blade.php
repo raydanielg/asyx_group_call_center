@@ -166,13 +166,6 @@
             </div>
             <span class="text-[10px] text-gray-400">Pending approval</span>
         </a>
-        <a href="{{ route('quality.coaching') }}" class="flex flex-col gap-1 p-3 rounded-xl border border-gray-100 hover:border-navy-200 hover:bg-navy-50/30 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Overdue Coaching</span>
-                <span class="text-lg font-bold {{ $overdueCoaching > 0 ? 'text-red-500' : 'text-gray-300' }}">{{ $overdueCoaching }}</span>
-            </div>
-            <span class="text-[10px] text-gray-400">Past follow-up date</span>
-        </a>
     </div>
 </div>
 
