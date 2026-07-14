@@ -58,41 +58,20 @@ class DatabaseSeeder extends Seeder
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // USERS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        $admin = User::create([
-            'name' => 'System Admin',
-            'first_name' => 'System',
-            'last_name' => 'Admin',
-            'email' => 'admin@ayscallcenter.com',
-            'phone' => '+255700000001',
-            'role' => 'admin',
-            'status' => 'active',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@ayscallcenter.com'],
+            ['name' => 'System Admin', 'first_name' => 'System', 'last_name' => 'Admin', 'phone' => '+255700000001', 'role' => 'admin', 'status' => 'active', 'password' => Hash::make('password'), 'email_verified_at' => now()]
+        );
 
-        $hrManager = User::create([
-            'name' => 'HR Manager',
-            'first_name' => 'Jane',
-            'last_name' => 'Mwangi',
-            'email' => 'hr@ayscallcenter.com',
-            'phone' => '+255700000002',
-            'role' => 'admin',
-            'status' => 'active',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        $hrManager = User::firstOrCreate(
+            ['email' => 'hr@ayscallcenter.com'],
+            ['name' => 'HR Manager', 'first_name' => 'Jane', 'last_name' => 'Mwangi', 'phone' => '+255700000002', 'role' => 'admin', 'status' => 'active', 'password' => Hash::make('password'), 'email_verified_at' => now()]
+        );
 
-        $qaLead = User::create([
-            'name' => 'QA Lead',
-            'first_name' => 'Joseph',
-            'last_name' => 'Komba',
-            'email' => 'qa@ayscallcenter.com',
-            'phone' => '+255700000003',
-            'role' => 'admin',
-            'status' => 'active',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        $qaLead = User::firstOrCreate(
+            ['email' => 'qa@ayscallcenter.com'],
+            ['name' => 'QA Lead', 'first_name' => 'Joseph', 'last_name' => 'Komba', 'phone' => '+255700000003', 'role' => 'admin', 'status' => 'active', 'password' => Hash::make('password'), 'email_verified_at' => now()]
+        );
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // BRANCHES
