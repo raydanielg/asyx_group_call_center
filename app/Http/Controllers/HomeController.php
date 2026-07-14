@@ -53,7 +53,7 @@ class HomeController extends Controller
         // Headcount by department
         $departments = Department::withCount(['employees' => function($q) {
             $q->where('employment_status', 'active');
-        }])->having('employees_count', '>', 0)->orderBy('employees_count', 'desc')->take(8)->get();
+        }])->orderBy('employees_count', 'desc')->take(8)->get()->filter(fn($d) => $d->employees_count > 0);
         $deptLabels = $departments->pluck('name')->toArray();
         $deptCounts = $departments->pluck('employees_count')->toArray();
 

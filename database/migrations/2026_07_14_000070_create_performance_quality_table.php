@@ -22,7 +22,7 @@ return new class extends Migration
 
         Schema::create('kpi_targets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kpi_id')->constrained('cascadeOnDelete');
+            $table->foreignId('kpi_id')->constrained()->cascadeOnDelete();
             $table->enum('scope', ['company', 'department', 'team', 'employee'])->default('company');
             $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('team_id')->nullable()->constrained()->nullOnDelete();
@@ -35,7 +35,7 @@ return new class extends Migration
 
         Schema::create('agent_daily_stats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('cascadeOnDelete');
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->integer('total_calls')->default(0);
             $table->integer('answered_calls')->default(0);
@@ -54,7 +54,7 @@ return new class extends Migration
 
         Schema::create('performance_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('cascadeOnDelete');
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->smallInteger('period_year');
             $table->smallInteger('period_month');
             $table->json('kpi_scores')->nullable();
@@ -89,7 +89,7 @@ return new class extends Migration
 
         Schema::create('quality_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('cascadeOnDelete');
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('form_id')->constrained('quality_evaluation_forms')->cascadeOnDelete();
             $table->string('call_reference')->nullable();
             $table->timestamp('evaluated_at')->useCurrent();
@@ -104,7 +104,7 @@ return new class extends Migration
 
         Schema::create('coaching_notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('cascadeOnDelete');
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('quality_evaluation_id')->nullable()->constrained('quality_evaluations')->nullOnDelete();
             $table->text('note');
             $table->text('action_items')->nullable();

@@ -28,7 +28,7 @@ return new class extends Migration
 
         Schema::create('applicants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_position_id')->constrained('cascadeOnDelete');
+            $table->foreignId('job_position_id')->constrained()->cascadeOnDelete();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->nullable();
@@ -46,7 +46,7 @@ return new class extends Migration
 
         Schema::create('interviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('applicant_id')->constrained('cascadeOnDelete');
+            $table->foreignId('applicant_id')->constrained()->cascadeOnDelete();
             $table->tinyInteger('round')->default(1);
             $table->enum('type', ['phone', 'onsite', 'video', 'assessment'])->default('phone');
             $table->timestamp('scheduled_at')->nullable();
@@ -76,7 +76,7 @@ return new class extends Migration
 
         Schema::create('employee_onboardings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('cascadeOnDelete');
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('checklist_id')->constrained('onboarding_checklists')->cascadeOnDelete();
             $table->timestamp('started_at')->useCurrent();
             $table->timestamp('completed_at')->nullable();
