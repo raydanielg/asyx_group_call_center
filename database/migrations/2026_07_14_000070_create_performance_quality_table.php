@@ -65,7 +65,7 @@ return new class extends Migration
             $table->foreignId('evaluated_by')->constrained('users')->cascadeOnDelete();
             $table->text('comments')->nullable();
             $table->enum('status', ['draft', 'finalized'])->default('draft');
-            $table->unique(['employee_id', 'period_year', 'period_month']);
+            $table->unique(['employee_id', 'period_year', 'period_month'], 'perf_eval_unique');
             $table->timestamps();
         });
 
