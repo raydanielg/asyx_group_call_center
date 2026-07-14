@@ -14,6 +14,8 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito:400,500,600,700,800,900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -22,111 +24,109 @@
 
     <style>
         @keyframes simpleFadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes toastIn { from { opacity:0; transform:translateX(100%); } to { opacity:1; transform:translateX(0); } }
-        @keyframes toastOut { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(100%); } }
-        .toast-in { animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
-        .toast-out { animation: toastOut 0.3s ease-in both; }
-        .ajax-loader { position:fixed; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #024938, #f9ac00, #024938); background-size: 200% 100%; animation: ajaxProgress 1s linear infinite; z-index:9999; display:none; }
+        .ajax-loader { position:fixed; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #0D3E63, #A56035, #0D3E63); background-size: 200% 100%; animation: ajaxProgress 1s linear infinite; z-index:9999; display:none; }
         @keyframes ajaxProgress { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
         .page-transition { animation: simpleFadeIn 0.35s ease-out both; }
+        .btn-loading { position: relative; color: transparent !important; pointer-events: none; }
+        .btn-loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: btnSpin 0.6s linear infinite; }
+        @keyframes btnSpin { to { transform: rotate(360deg); } }
+        .swal2-popup { font-family: 'Nunito', sans-serif !important; border-radius: 12px !important; }
+        .swal2-toast { font-family: 'Nunito', sans-serif !important; border-radius: 10px !important; box-shadow: 0 4px 24px rgba(0,0,0,0.12) !important; }
+        .swal2-icon { border-radius: 50% !important; }
+        .swal2-title { font-size: 14px !important; font-weight: 700 !important; padding: 0 !important; }
+        .swal2-html-container { font-size: 12px !important; margin: 0 !important; }
+        .swal2-confirm { border-radius: 8px !important; font-weight: 700 !important; font-size: 12px !important; padding: 6px 16px !important; }
     </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        emerald: { 50:'#e6f5f1',100:'#b3e0d4',200:'#80cbc0',300:'#4db5a8',400:'#1a9f8e',500:'#024938',600:'#023d30',700:'#013028',800:'#01241f',900:'#001816' },
-                        gold: { 50:'#fff5e0',100:'#ffe6b3',200:'#ffd680',300:'#ffc64d',400:'#ffb71a',500:'#f9ac00',600:'#d49700',700:'#b07c00',800:'#8c6100',900:'#684600' }
+                        navy: { 50:'#eef4f9',100:'#d4e3f0',200:'#a8c7e0',300:'#6a9bc8',400:'#3a6d9f',500:'#0D3E63',600:'#0a3556',700:'#082c49',800:'#06233c',900:'#041a2f' },
+                        copper: { 50:'#faf3ee',100:'#f0ddd0',200:'#e0bba6',300:'#d09a7d',400:'#c07854',500:'#A56035',600:'#8f522d',700:'#794426',800:'#63361e',900:'#4d2817' },
+                        purple: { 50:'#f5edf6',100:'#e8d4ec',200:'#d1a9d9',300:'#b97ec6',400:'#9d53b0',500:'#632871',600:'#552361',700:'#471e51',800:'#391940',900:'#2b142f' },
+                        red: { 50:'#fef0f0',100:'#fcd5d6',200:'#faabad',300:'#f6888a',400:'#f26567',500:'#EC2226',600:'#c91d20',700:'#a6181a',800:'#831316',900:'#660e10' }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="font-['Nunito',sans-serif] antialiased text-slate-800 min-h-screen">
+<body class="font-['Nunito',sans-serif] antialiased text-[#1A2332] min-h-screen bg-[#F8F9FB]">
 
     {{-- Auth Background --}}
     <div class="fixed inset-0 z-0">
         <img src="{{ asset('serious-expert-expressing-support-colleague (1).jpg') }}" alt="Background" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/90 via-emerald-800/85 to-emerald-700/80"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-navy-500/90 via-navy-600/85 to-navy-700/80"></div>
         <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px); background-size: 24px 24px;"></div>
     </div>
 
     {{-- AJAX Progress Bar --}}
     <div id="ajaxLoader" class="ajax-loader"></div>
 
-    {{-- Toast Container (top right) --}}
-    <div id="toastContainer" class="fixed top-5 right-5 z-[60] flex flex-col gap-3 w-full max-w-sm pointer-events-none"></div>
-
     <main id="authMain" class="relative z-10 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         @yield('content')
     </main>
 
-    {{-- Toast System --}}
+    {{-- SweetAlert2 Alert System --}}
     <script>
     (function() {
-        const container = document.getElementById('toastContainer');
-
-        function showToast(type, title, message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast-in pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-lg border backdrop-blur-sm';
-
-            let iconSvg, bgClass, borderClass;
-            if (type === 'success') {
-                iconSvg = '<svg class="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                bgClass = 'bg-emerald-50/95';
-                borderClass = 'border-emerald-200';
-            } else if (type === 'error') {
-                iconSvg = '<svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                bgClass = 'bg-red-50/95';
-                borderClass = 'border-red-200';
-            } else if (type === 'warning') {
-                iconSvg = '<svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
-                bgClass = 'bg-amber-50/95';
-                borderClass = 'border-amber-200';
+        function showAlert(type, title, message) {
+            const Swal = window.Swal || window.Sweetalert2;
+            if (!Swal) return;
+            const colors = {
+                success: '#0D3E63',
+                error: '#EC2226',
+                warning: '#A56035',
+                info: '#632871'
+            };
+            const SwalMixin = Swal.mixin ? Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                customClass: { popup: 'swal2-toast' },
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            }) : null;
+            if (SwalMixin) {
+                SwalMixin.fire({
+                    icon: type,
+                    title: title + (message ? ': ' + message : ''),
+                    iconColor: colors[type] || '#0D3E63'
+                });
             } else {
-                iconSvg = '<svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                bgClass = 'bg-blue-50/95';
-                borderClass = 'border-blue-200';
+                Swal.fire({
+                    icon: type,
+                    title: title,
+                    text: message || '',
+                    confirmButtonColor: colors[type] || '#0D3E63',
+                    confirmButtonText: 'OK'
+                });
             }
-
-            toast.classList.add(...bgClass.split(' '), ...borderClass.split(' '));
-            toast.innerHTML = iconSvg +
-                '<div class="flex-1 min-w-0">' +
-                    '<p class="text-sm font-semibold text-gray-800">' + title + '</p>' +
-                    (message ? '<p class="text-sm text-gray-500 mt-0.5">' + message + '</p>' : '') +
-                '</div>' +
-                '<button onclick="this.parentElement.classList.add(\'toast-out\'); setTimeout(()=>this.parentElement.remove(), 300)" class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors">' +
-                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
-                '</button>';
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('toast-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
         }
-
-        window.showToast = showToast;
+        window.showToast = showAlert;
+        window.showAlert = showAlert;
 
         @if(session('status'))
-            showToast('success', 'Success', '{{ session('status') }}');
+            showAlert('success', 'Success!', '{{ session('status') }}');
         @endif
         @if(session('error'))
-            showToast('error', 'Error', '{{ session('error') }}');
+            showAlert('error', 'Oops...', '{{ session('error') }}');
         @endif
         @if(session('warning'))
-            showToast('warning', 'Warning', '{{ session('warning') }}');
+            showAlert('warning', 'Warning', '{{ session('warning') }}');
         @endif
         @if(session('info'))
-            showToast('info', 'Info', '{{ session('info') }}');
+            showAlert('info', 'Info', '{{ session('info') }}');
         @endif
 
         @if($errors->any())
-            @foreach($errors->all() as $error)
-                showToast('error', 'Validation Error', '{{ $error }}');
-            @endforeach
+            @php $allErrors = $errors->all(); @endphp
+            showAlert('error', 'Validation Error', '{{ implode("\n", $allErrors) }}');
         @endif
     })();
 
@@ -178,7 +178,7 @@
             })
             .catch(err => {
                 hideLoader();
-                window.showToast && window.showToast('error', 'Connection Error', 'Please check your internet connection.');
+                window.showAlert && window.showAlert('error', 'Connection Error', 'Please check your internet connection.');
             });
         }
 
@@ -201,11 +201,6 @@
 
         function rebindForms() {
             document.querySelectorAll('form[method="POST"]').forEach(function(form) {
-                const action = form.getAttribute('action') || form.action || '';
-                const url = new URL(action, window.location.href);
-                if (url.pathname.match(/\/(login|register|logout|password|email|verification)/)) {
-                    return;
-                }
                 form.removeEventListener('submit', handleAjaxSubmit);
                 form.addEventListener('submit', handleAjaxSubmit);
             });
@@ -215,26 +210,23 @@
             e.preventDefault();
             const form = e.target;
             const btn = form.querySelector('button[type="submit"]');
-            const originalHTML = btn ? btn.innerHTML : '';
 
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<svg class="animate-spin w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...';
+                btn.classList.add('btn-loading');
             }
             showLoader();
 
             const formData = new FormData(form);
             let actionUrl = form.action;
-            const sk = getSk();
-            if (sk) {
-                const u = new URL(actionUrl, window.location.href);
-                u.searchParams.set('sk', sk);
-                actionUrl = u.toString();
-            }
+
             fetch(actionUrl, {
                 method: 'POST',
                 body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
                 credentials: 'same-origin',
                 redirect: 'follow'
             })
@@ -243,16 +235,78 @@
                     window.location.href = r.url;
                     return null;
                 }
-                return r.text();
+                if (r.type === 'opaqueredirect' || r.status === 0) {
+                    window.location.reload();
+                    return null;
+                }
+                const contentType = r.headers.get('content-type') || '';
+                if (r.status === 204) {
+                    return { json: {}, status: 204, type: 'json' };
+                }
+                if (contentType.includes('application/json')) {
+                    return r.json().then(data => ({ json: data, status: r.status, type: 'json' }));
+                }
+                return r.text().then(html => ({ html, status: r.status, type: 'html' }));
             })
-            .then(html => {
-                if (html === null) return;
+            .then(result => {
+                if (result === null) return;
                 hideLoader();
-                if (btn) { btn.disabled = false; btn.innerHTML = originalHTML; }
+                if (btn) { btn.disabled = false; btn.classList.remove('btn-loading'); }
 
-                if (html.trim().startsWith('<!DOCTYPE') || html.trim().startsWith('<!doctype')) {
+                if (result.type === 'json') {
+                    if (result.status === 204) {
+                        window.location.href = '/home';
+                        return;
+                    }
+                    if (result.status === 200) {
+                        if (result.json.redirect) {
+                            window.location.href = result.json.redirect;
+                            return;
+                        }
+                        if (result.json.message || result.json.status) {
+                            const msg = result.json.message || result.json.status;
+                            window.showAlert && window.showAlert('success', 'Success!', msg);
+                            const actionUrl = form.getAttribute('action') || '';
+                            if (actionUrl.includes('/password/reset') || actionUrl.includes('password.update')) {
+                                setTimeout(function() { window.location.href = '/home'; }, 2000);
+                            }
+                            return;
+                        }
+                        window.location.href = '/home';
+                        return;
+                    }
+                    if (result.status === 422) {
+                        const messages = [];
+                        if (result.json.errors) {
+                            Object.values(result.json.errors).forEach(function(errs) {
+                                if (Array.isArray(errs)) {
+                                    errs.forEach(function(msg) { messages.push(msg); });
+                                } else {
+                                    messages.push(errs);
+                                }
+                            });
+                        } else if (result.json.message) {
+                            messages.push(result.json.message);
+                        }
+                        if (messages.length > 0) {
+                            window.showAlert && window.showAlert('error', 'Error', messages.join('. '));
+                        }
+                        return;
+                    }
+                    if (result.json.redirect) {
+                        window.location.href = result.json.redirect;
+                        return;
+                    }
+                    if (result.json.message) {
+                        const alertType = result.status >= 400 ? 'error' : 'success';
+                        window.showAlert && window.showAlert(alertType, result.status >= 400 ? 'Error' : 'Success', result.json.message);
+                    }
+                    return;
+                }
+
+                if (result.html && (result.html.trim().startsWith('<!DOCTYPE') || result.html.trim().startsWith('<!doctype'))) {
                     const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
+                    const doc = parser.parseFromString(result.html, 'text/html');
                     const newContent = doc.querySelector('main');
                     if (newContent && authMain) {
                         authMain.innerHTML = newContent.innerHTML;
@@ -266,6 +320,12 @@
                             const token = doc.querySelector('meta[name="csrf-token"]').content;
                             document.querySelector('meta[name="csrf-token"]').content = token;
                         }
+                        const errEls = doc.querySelectorAll('.text-red-600');
+                        if (errEls.length > 0) {
+                            const msgs = [];
+                            errEls.forEach(function(el) { const t = el.textContent.trim(); if (t) msgs.push(t); });
+                            if (msgs.length > 0) window.showAlert && window.showAlert('error', 'Error', msgs.join('. '));
+                        }
                     } else {
                         window.location.reload();
                     }
@@ -273,10 +333,10 @@
                     window.location.reload();
                 }
             })
-            .catch(() => {
+            .catch(function(err) {
                 hideLoader();
-                if (btn) { btn.disabled = false; btn.innerHTML = originalHTML; }
-                window.showToast && window.showToast('error', 'Network Error', 'Please try again.');
+                if (btn) { btn.disabled = false; btn.classList.remove('btn-loading'); }
+                window.showAlert && window.showAlert('error', 'Error', 'Something went wrong. Please try again.');
             });
         }
 
