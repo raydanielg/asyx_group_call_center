@@ -77,42 +77,169 @@
                 </a>
             </div>
 
-            {{-- Agents --}}
+            {{-- Employees --}}
             <div class="sidebar-group">
-                <button onclick="toggleMenu('menu-agents')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('agents*') ? 'active' : '' }}">
-                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    <span>Agents</span>
-                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-agents" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <button onclick="toggleMenu('menu-emp')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('employees*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Employees</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-emp" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div id="menu-agents" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('agents*') ? 'open' : '' }}">
-                    <a href="#" class="block py-1.5 text-xs text-navy-200/70 hover:text-white transition-colors">All Agents</a>
-                    <a href="#" class="block py-1.5 text-xs text-navy-200/70 hover:text-white transition-colors">Performance</a>
-                    <a href="#" class="block py-1.5 text-xs text-navy-200/70 hover:text-white transition-colors">Schedules</a>
+                <div id="menu-emp" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('employees*') ? 'open' : '' }}">
+                    <a href="{{ route('employees.index') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">All Employees</a>
+                    <a href="{{ route('employees.create') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Add Employee</a>
+                    <a href="{{ route('employees.documents-expiry') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Doc Expiry</a>
                 </div>
             </div>
 
-            {{-- Calls --}}
+            {{-- Organization --}}
             <div class="sidebar-group">
-                <a href="#" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('calls*') ? 'active' : '' }}">
-                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                    <span>Calls</span>
-                </a>
+                <button onclick="toggleMenu('menu-org')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('organization*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/></svg>
+                    <span>Organization</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-org" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-org" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('organization*') ? 'open' : '' }}">
+                    <a href="{{ route('organization.branches') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Branches</a>
+                    <a href="{{ route('organization.departments') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Departments</a>
+                    <a href="{{ route('organization.positions') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Positions</a>
+                    <a href="{{ route('organization.teams') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Teams</a>
+                    <a href="{{ route('organization.working-hours') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Working Hours</a>
+                    <a href="{{ route('organization.holidays') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Holidays</a>
+                    <a href="{{ route('organization.policies') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Policies</a>
+                </div>
+            </div>
+
+            {{-- Attendance --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-att')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('attendance*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <span>Attendance</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-att" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-att" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('attendance*') ? 'open' : '' }}">
+                    <a href="{{ route('attendance.index') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Daily Grid</a>
+                    <a href="{{ route('attendance.missing') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Missing</a>
+                    <a href="{{ route('attendance.corrections') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Corrections</a>
+                    <a href="{{ route('attendance.summary') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Summary</a>
+                </div>
+            </div>
+
+            {{-- Shifts --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-shift')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('shifts*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Shifts</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-shift" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-shift" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('shifts*') ? 'open' : '' }}">
+                    <a href="{{ route('shifts.index') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Catalog</a>
+                    <a href="{{ route('shifts.planner') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Planner</a>
+                    <a href="{{ route('shifts.rotations') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Rotations</a>
+                </div>
+            </div>
+
+            {{-- Leave --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-leave')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('leave*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                    <span>Leave</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-leave" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-leave" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('leave*') ? 'open' : '' }}">
+                    <a href="{{ route('leave.types') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Leave Types</a>
+                    <a href="{{ route('leave.requests') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Requests</a>
+                    <a href="{{ route('leave.balances') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Balances</a>
+                </div>
+            </div>
+
+            {{-- Payroll --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-pay')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('payroll*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Payroll</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-pay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-pay" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('payroll*') ? 'open' : '' }}">
+                    <a href="{{ route('payroll.components') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Components</a>
+                    <a href="{{ route('payroll.runs') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Payroll Runs</a>
+                    <a href="{{ route('payroll.bonuses') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Bonuses</a>
+                    <a href="{{ route('payroll.commissions') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Commissions</a>
+                </div>
+            </div>
+
+            {{-- Recruitment --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-rec')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('recruitment*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span>Recruitment</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-rec" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-rec" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('recruitment*') ? 'open' : '' }}">
+                    <a href="{{ route('recruitment.jobs') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Job Positions</a>
+                    <a href="{{ route('recruitment.applicants') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Applicants</a>
+                    <a href="{{ route('recruitment.interviews') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Interviews</a>
+                    <a href="{{ route('recruitment.onboarding') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Onboarding</a>
+                </div>
+            </div>
+
+            {{-- Performance --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-perf')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('performance*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    <span>Performance</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-perf" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-perf" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('performance*') ? 'open' : '' }}">
+                    <a href="{{ route('performance.kpis') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">KPIs</a>
+                    <a href="{{ route('performance.targets') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Targets</a>
+                    <a href="{{ route('performance.evaluations') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Evaluations</a>
+                    <a href="{{ route('performance.leaderboard') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Leaderboard</a>
+                </div>
+            </div>
+
+            {{-- Analytics --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-ana')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('analytics*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span>Analytics</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-ana" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-ana" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('analytics*') ? 'open' : '' }}">
+                    <a href="{{ route('analytics.overview') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Overview</a>
+                    <a href="{{ route('analytics.data-entry') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Data Entry</a>
+                </div>
+            </div>
+
+            {{-- Quality --}}
+            <div class="sidebar-group">
+                <button onclick="toggleMenu('menu-qual')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('quality*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Quality</span>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-qual" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-qual" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('quality*') ? 'open' : '' }}">
+                    <a href="{{ route('quality.forms') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Eval Forms</a>
+                    <a href="{{ route('quality.evaluations') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Evaluations</a>
+                    <a href="{{ route('quality.coaching') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Coaching</a>
+                </div>
             </div>
 
             {{-- Reports --}}
             <div class="sidebar-group">
-                <a href="#" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('reports*') ? 'active' : '' }}">
-                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <button onclick="toggleMenu('menu-rep')" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('reports*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Reports</span>
-                </a>
-            </div>
-
-            {{-- Settings --}}
-            <div class="sidebar-group">
-                <a href="#" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-100 text-sm font-medium {{ request()->routeIs('settings*') ? 'active' : '' }}">
-                    <svg class="w-5 h-5 text-copper-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <span>Settings</span>
-                </a>
+                    <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-rep" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="menu-rep" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('reports*') ? 'open' : '' }}">
+                    <a href="{{ route('reports.employees') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Employees</a>
+                    <a href="{{ route('reports.attendance') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Attendance</a>
+                    <a href="{{ route('reports.payroll') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Payroll</a>
+                    <a href="{{ route('reports.recruitment') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Recruitment</a>
+                    <a href="{{ route('reports.performance') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Performance</a>
+                    <a href="{{ route('reports.call-center') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Call Center</a>
+                    <a href="{{ route('reports.audit') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Audit Log</a>
+                </div>
             </div>
 
         </div>
