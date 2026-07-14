@@ -13,7 +13,7 @@
     </div>
 </div>
 
-<form method="POST" action="{{ route('quality.evaluations.store') }}" class="space-y-4" id="qa-form">
+<form method="POST" action="{{ route('quality.evaluations.store') }}" class="space-y-4" id="qa-form" data-ajax>
     @csrf
 
     <div class="bg-white rounded-xl border p-5">

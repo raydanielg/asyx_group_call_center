@@ -16,7 +16,7 @@
     <h2 class="text-lg font-bold text-gray-900">Edit {{ $employee->first_name }} {{ $employee->last_name }}</h2>
 </div>
 
-<form method="POST" action="{{ route('employees.update', $employee) }}" class="space-y-4">
+<form method="POST" action="{{ route('employees.update', $employee) }}" class="space-y-4" data-ajax>
     @csrf
     @method('PUT')
 

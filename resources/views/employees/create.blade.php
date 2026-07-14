@@ -15,7 +15,7 @@
     <p class="text-xs text-gray-500">Fill in the employee details below</p>
 </div>
 
-<form method="POST" action="{{ route('employees.store') }}" class="space-y-4">
+<form method="POST" action="{{ route('employees.store') }}" class="space-y-4" data-ajax>
     @csrf
 
     {{-- Personal Info --}}

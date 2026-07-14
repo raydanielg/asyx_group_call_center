@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 class PerformanceController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -33,7 +35,7 @@ class PerformanceController extends Controller
             'applies_to' => 'required|in:agent,team',
         ]);
         Kpi::create($validated);
-        return back()->with('success', 'KPI created.');
+        return $this->ajaxSuccess('KPI created successfully.');
     }
 
     public function kpisUpdate(Request $request, Kpi $kpi)
@@ -48,13 +50,13 @@ class PerformanceController extends Controller
             'is_active' => 'boolean',
         ]);
         $kpi->update($validated);
-        return back()->with('success', 'KPI updated.');
+        return $this->ajaxSuccess('KPI updated successfully.');
     }
 
     public function kpisDestroy(Kpi $kpi)
     {
         $kpi->delete();
-        return back()->with('success', 'KPI deleted.');
+        return $this->ajaxSuccess('KPI deleted successfully.');
     }
 
     public function targetsIndex()
@@ -80,13 +82,13 @@ class PerformanceController extends Controller
             'target_value' => 'required|numeric',
         ]);
         KpiTarget::create($validated);
-        return back()->with('success', 'Target set.');
+        return $this->ajaxSuccess('Target set successfully.');
     }
 
     public function targetsDestroy(KpiTarget $target)
     {
         $target->delete();
-        return back()->with('success', 'Target deleted.');
+        return $this->ajaxSuccess('Target deleted successfully.');
     }
 
     public function evaluationsIndex(Request $request)
@@ -171,7 +173,7 @@ class PerformanceController extends Controller
             $count++;
         }
 
-        return back()->with('success', "Generated {$count} evaluations.");
+        return $this->ajaxSuccess("Generated {$count} evaluations successfully.");
     }
 
     public function evaluationsShow(PerformanceEvaluation $evaluation)
@@ -183,7 +185,7 @@ class PerformanceController extends Controller
     public function evaluationsFinalize(PerformanceEvaluation $evaluation)
     {
         $evaluation->update(['status' => 'finalized']);
-        return back()->with('success', 'Evaluation finalized.');
+        return $this->ajaxSuccess('Evaluation finalized successfully.');
     }
 
     public function leaderboard(Request $request)

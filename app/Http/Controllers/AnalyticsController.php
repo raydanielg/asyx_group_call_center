@@ -44,10 +44,10 @@ class AnalyticsController extends Controller
 
         // Daily trend
         $dailyData = $stats->groupBy(function($s) { return $s->date->format('M d'); });
-        $trendLabels = $dailyData->keys()->toArray();
-        $callsData = $dailyData->map(fn($g) => $g->sum('total_calls'))->toArray();
-        $ahtData = $dailyData->map(fn($g) => round($g->avg('aht_seconds') ?? 0, 1))->toArray();
-        $csatData = $dailyData->map(fn($g) => round($g->avg('csat_score') ?? 0, 2))->toArray();
+        $trendLabels = array_values($dailyData->keys()->toArray());
+        $callsData = array_values($dailyData->map(fn($g) => $g->sum('total_calls'))->toArray());
+        $ahtData = array_values($dailyData->map(fn($g) => round($g->avg('aht_seconds') ?? 0, 1))->toArray());
+        $csatData = array_values($dailyData->map(fn($g) => round($g->avg('csat_score') ?? 0, 2))->toArray());
 
         // Team comparison
         $teamComparison = $stats->groupBy(function($s) {

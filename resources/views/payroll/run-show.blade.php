@@ -33,17 +33,17 @@
             @php $color = $stColors[$run->status] ?? 'gray'; @endphp
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium bg-{{ $color }}-50 text-{{ $color }}-700 border border-{{ $color }}-100">{{ ucfirst($run->status) }}</span>
             @if($run->status === 'draft')
-                <form method="POST" action="{{ route('payroll.runs.process', $run) }}">
+                <form method="POST" action="{{ route('payroll.runs.process', $run) }}" data-ajax data-confirm="Process this payroll run?">
                     @csrf
                     <button type="submit" class="px-3 py-1.5 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700">Process</button>
                 </form>
             @elseif($run->status === 'review')
-                <form method="POST" action="{{ route('payroll.runs.approve', $run) }}">
+                <form method="POST" action="{{ route('payroll.runs.approve', $run) }}" data-ajax data-confirm="Approve this payroll run?">
                     @csrf
                     <button type="submit" class="px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded-lg hover:bg-green-700">Approve</button>
                 </form>
             @elseif($run->status === 'approved')
-                <form method="POST" action="{{ route('payroll.runs.mark-paid', $run) }}">
+                <form method="POST" action="{{ route('payroll.runs.mark-paid', $run) }}" data-ajax data-confirm="Mark this payroll run as paid?">
                     @csrf
                     <button type="submit" class="px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded-lg hover:bg-green-700">Mark Paid</button>
                 </form>

@@ -10,7 +10,7 @@
         <h2 class="text-lg font-bold text-gray-900">Leave Requests</h2>
         <p class="text-xs text-gray-500">Manage and approve leave requests</p>
     </div>
-    <button onclick="document.getElementById('modal-lr').classList.remove('hidden')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
+    <button onclick="openModal('modal-lr')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         New Request
     </button>
@@ -55,14 +55,14 @@
                     </td>
                     <td class="px-5 py-3 text-xs">
                         @if($lr->status === 'pending')
-                            <form method="POST" action="{{ route('leave.requests.approve', $lr) }}" class="inline">
+                            <form method="POST" action="{{ route('leave.requests.approve', $lr) }}" class="inline" data-ajax data-confirm="Approve this leave request?">
                                 @csrf
                                 <button type="submit" class="text-green-600 hover:text-green-700 font-medium">Approve</button>
                             </form>
                             <span class="text-gray-200">|</span>
                             <button onclick="rejectLeave({{ $lr->id }})" class="text-red-500 hover:text-red-600 font-medium">Reject</button>
                         @elseif($lr->status === 'approved')
-                            <form method="POST" action="{{ route('leave.requests.cancel', $lr) }}" class="inline">
+                            <form method="POST" action="{{ route('leave.requests.cancel', $lr) }}" class="inline" data-ajax data-confirm="Cancel this approved leave request?">
                                 @csrf
                                 <button type="submit" class="text-gray-500 hover:text-gray-600 font-medium">Cancel</button>
                             </form>
@@ -82,10 +82,10 @@
 
 {{-- New Request Modal --}}
 <div id="modal-lr" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="document.getElementById('modal-lr').classList.add('hidden')"></div>
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('modal-lr')"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-xl shadow-xl p-5">
         <h3 class="text-sm font-semibold text-gray-900 mb-4">New Leave Request</h3>
-        <form method="POST" action="{{ route('leave.requests.store') }}" class="space-y-3">
+        <form method="POST" action="{{ route('leave.requests.store') }}" class="space-y-3" data-ajax data-close-modal="modal-lr" data-reset-on-success="true">
             @csrf
             <div><label class="block text-xs font-medium text-gray-600 mb-1">Employee <span class="text-red-500">*</span></label>
                 <select name="employee_id" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300">
@@ -106,7 +106,7 @@
             <div><label class="block text-xs font-medium text-gray-600 mb-1">Reason</label><textarea name="reason" rows="2" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></textarea></div>
             <div class="flex gap-2 pt-2">
                 <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700">Submit</button>
-                <button type="button" onclick="document.getElementById('modal-lr').classList.add('hidden')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="button" onclick="closeModal('modal-lr')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
             </div>
         </form>
     </div>

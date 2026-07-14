@@ -10,7 +10,7 @@
         <h2 class="text-lg font-bold text-gray-900">Performance Evaluations</h2>
         <p class="text-xs text-gray-500">Generate and review evaluations</p>
     </div>
-    <button onclick="document.getElementById('modal-gen').classList.remove('hidden')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
+    <button onclick="openModal('modal-gen')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         Generate
     </button>
@@ -57,10 +57,10 @@
 </div>
 
 <div id="modal-gen" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="document.getElementById('modal-gen').classList.add('hidden')"></div>
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('modal-gen')"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white rounded-xl shadow-xl p-5">
         <h3 class="text-sm font-semibold text-gray-900 mb-4">Generate Evaluations</h3>
-        <form method="POST" action="{{ route('performance.evaluations.generate') }}" class="space-y-3">
+        <form method="POST" action="{{ route('performance.evaluations.generate') }}" class="space-y-3" data-ajax data-close-modal="modal-gen" data-reset-on-success="true">
             @csrf
             <div class="grid grid-cols-2 gap-3">
                 <div><label class="block text-xs font-medium text-gray-600 mb-1">Year <span class="text-red-500">*</span></label><input type="number" name="period_year" value="{{ now()->year }}" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></div>
@@ -73,7 +73,7 @@
             <p class="text-[10px] text-gray-400">This will generate evaluations for all active employees based on their KPI targets and call center stats.</p>
             <div class="flex gap-2 pt-2">
                 <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700">Generate</button>
-                <button type="button" onclick="document.getElementById('modal-gen').classList.add('hidden')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="button" onclick="closeModal('modal-gen')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
             </div>
         </form>
     </div>

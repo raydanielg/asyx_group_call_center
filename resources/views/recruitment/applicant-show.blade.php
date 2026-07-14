@@ -36,7 +36,7 @@
         {{-- Stage Changer --}}
         <div class="bg-white rounded-xl border p-5">
             <h3 class="text-sm font-semibold text-gray-900 mb-3">Change Stage</h3>
-            <form method="POST" action="{{ route('recruitment.applicants.update-stage', $applicant) }}" class="space-y-3">
+            <form method="POST" action="{{ route('recruitment.applicants.update-stage', $applicant) }}" class="space-y-3" data-ajax>
                 @csrf
                 <select name="stage" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300" onchange="this.form.submit()">
                     @foreach(['applied','screening','interview','offer','hired','rejected'] as $st)

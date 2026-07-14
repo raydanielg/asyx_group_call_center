@@ -14,7 +14,7 @@
 </div>
 
 <div class="max-w-2xl">
-    <form method="POST" action="{{ route('quality.coaching.store') }}" class="space-y-4">
+    <form method="POST" action="{{ route('quality.coaching.store') }}" class="space-y-4" data-ajax>
         @csrf
         @if($evaluationId)
         <input type="hidden" name="quality_evaluation_id" value="{{ $evaluationId }}">

@@ -15,7 +15,7 @@
     {{-- Entry Form --}}
     <div class="bg-white rounded-xl border p-5">
         <h3 class="text-sm font-semibold text-gray-900 mb-4">Enter Daily Stats</h3>
-        <form method="POST" action="{{ route('analytics.data-entry') }}" class="space-y-3">
+        <form method="POST" action="{{ route('analytics.data-entry') }}" class="space-y-3" data-ajax data-reset-on-success="true">
             @csrf
             <div><label class="block text-xs font-medium text-gray-600 mb-1">Agent <span class="text-red-500">*</span></label>
                 <select name="employee_id" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300">

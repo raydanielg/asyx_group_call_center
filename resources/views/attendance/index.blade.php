@@ -62,7 +62,7 @@
                         @if($rec && $rec->overtime_minutes > 0)
                             <span class="text-copper-600 font-medium">{{ $rec->overtime_minutes }}m</span>
                             @if(!$rec->overtime_approved)
-                                <form method="POST" action="{{ route('attendance.approve-overtime', $rec) }}" class="inline">
+                                <form method="POST" action="{{ route('attendance.approve-overtime', $rec) }}" class="inline" data-ajax data-confirm="Approve this overtime?">
                                     @csrf
                                     <button type="submit" class="text-[9px] text-navy-600 hover:text-navy-700">Approve</button>
                                 </form>

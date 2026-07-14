@@ -37,7 +37,7 @@
                 <div class="mt-2 text-[10px] text-gray-400">By {{ $note->createdBy?->name ?? 'N/A' }} · {{ $note->created_at?->format('M d, Y') }}</div>
             </div>
             @if($note->status === 'open')
-            <form method="POST" action="{{ route('quality.coaching.done', $note) }}">
+            <form method="POST" action="{{ route('quality.coaching.done', $note) }}" data-ajax data-confirm="Mark this coaching note as done?">
                 @csrf
                 <button type="submit" class="px-3 py-1.5 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100">Mark Done</button>
             </form>

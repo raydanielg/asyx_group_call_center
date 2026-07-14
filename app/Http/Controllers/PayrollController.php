@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 class PayrollController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -38,7 +40,7 @@ class PayrollController extends Controller
             'is_statutory' => 'boolean',
         ]);
         SalaryComponent::create($validated);
-        return back()->with('success', 'Salary component created.');
+        return $this->ajaxSuccess('Salary component created successfully.');
     }
 
     public function componentsUpdate(Request $request, SalaryComponent $component)
@@ -54,13 +56,13 @@ class PayrollController extends Controller
             'is_active' => 'boolean',
         ]);
         $component->update($validated);
-        return back()->with('success', 'Salary component updated.');
+        return $this->ajaxSuccess('Salary component updated successfully.');
     }
 
     public function componentsDestroy(SalaryComponent $component)
     {
         $component->delete();
-        return back()->with('success', 'Component deleted.');
+        return $this->ajaxSuccess('Salary component deleted successfully.');
     }
 
     public function runsIndex()
@@ -81,7 +83,7 @@ class PayrollController extends Controller
             ->exists();
 
         if ($exists) {
-            return back()->with('error', 'Payroll run already exists for this period.');
+            return $this->ajaxError('Payroll run already exists for this period.');
         }
 
         $run = PayrollRun::create([
@@ -91,7 +93,7 @@ class PayrollController extends Controller
             'processed_by' => auth()->id(),
         ]);
 
-        return redirect()->route('payroll.runs.show', $run->id)->with('success', 'Payroll run created. Click Process to calculate.');
+        return $this->ajaxSuccess('Payroll run created. Click Process to calculate.', route('payroll.runs.show', $run->id));
     }
 
     public function runsShow(PayrollRun $run)
@@ -103,7 +105,7 @@ class PayrollController extends Controller
     public function runsProcess(PayrollRun $run)
     {
         if ($run->status !== 'draft') {
-            return back()->with('error', 'Run already processed.');
+            return $this->ajaxError('Run already processed.');
         }
 
         $run->update(['status' => 'processing']);
@@ -220,26 +222,26 @@ class PayrollController extends Controller
             'employee_count' => $employees->count(),
         ]);
 
-        return back()->with('success', 'Payroll processed. ' . $employees->count() . ' payslips generated.');
+        return $this->ajaxSuccess('Payroll processed. ' . $employees->count() . ' payslips generated.');
     }
 
     public function runsApprove(PayrollRun $run)
     {
         if ($run->status !== 'review') {
-            return back()->with('error', 'Run must be in review state.');
+            return $this->ajaxError('Run must be in review state.');
         }
         $run->update(['status' => 'approved', 'approved_by' => auth()->id()]);
-        return back()->with('success', 'Payroll approved.');
+        return $this->ajaxSuccess('Payroll approved successfully.');
     }
 
     public function runsMarkPaid(PayrollRun $run)
     {
         if ($run->status !== 'approved') {
-            return back()->with('error', 'Run must be approved first.');
+            return $this->ajaxError('Run must be approved first.');
         }
         $run->update(['status' => 'paid', 'paid_at' => now()]);
         $run->payslips()->update(['status' => 'final']);
-        return back()->with('success', 'Payroll marked as paid. Payslips finalized.');
+        return $this->ajaxSuccess('Payroll marked as paid. Payslips finalized.');
     }
 
     public function payslipsShow(Payslip $payslip)
@@ -265,13 +267,13 @@ class PayrollController extends Controller
             'reason' => 'nullable|string',
         ]);
         Bonus::create(array_merge($validated, ['created_by' => auth()->id()]));
-        return back()->with('success', 'Bonus added.');
+        return $this->ajaxSuccess('Bonus added successfully.');
     }
 
     public function bonusesDestroy(Bonus $bonus)
     {
         $bonus->delete();
-        return back()->with('success', 'Bonus deleted.');
+        return $this->ajaxSuccess('Bonus deleted successfully.');
     }
 
     public function commissionsIndex()
@@ -291,12 +293,12 @@ class PayrollController extends Controller
             'basis' => 'nullable|string',
         ]);
         Commission::create(array_merge($validated, ['created_by' => auth()->id()]));
-        return back()->with('success', 'Commission added.');
+        return $this->ajaxSuccess('Commission added successfully.');
     }
 
     public function commissionsDestroy(Commission $commission)
     {
         $commission->delete();
-        return back()->with('success', 'Commission deleted.');
+        return $this->ajaxSuccess('Commission deleted successfully.');
     }
 }

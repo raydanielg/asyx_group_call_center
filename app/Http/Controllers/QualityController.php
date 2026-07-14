@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 class QualityController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -31,7 +33,7 @@ class QualityController extends Controller
             'max_score' => 'required|integer|min:1',
         ]);
         QualityEvaluationForm::create($validated);
-        return back()->with('success', 'Form created.');
+        return $this->ajaxSuccess('Form created successfully.');
     }
 
     public function formsShow(QualityEvaluationForm $form)
@@ -50,19 +52,19 @@ class QualityController extends Controller
         $validated['form_id'] = $form->id;
         $validated['sort_order'] = $form->criteria()->max('sort_order') + 1;
         QualityFormCriterion::create($validated);
-        return back()->with('success', 'Criterion added.');
+        return $this->ajaxSuccess('Criterion added successfully.');
     }
 
     public function formsDestroyCriterion(QualityFormCriterion $criterion)
     {
         $criterion->delete();
-        return back()->with('success', 'Criterion deleted.');
+        return $this->ajaxSuccess('Criterion deleted successfully.');
     }
 
     public function formsDestroy(QualityEvaluationForm $form)
     {
         $form->delete();
-        return back()->with('success', 'Form deleted.');
+        return $this->ajaxSuccess('Form deleted successfully.');
     }
 
     // Evaluations
@@ -116,11 +118,10 @@ class QualityController extends Controller
         ]);
 
         if ($outcome !== 'pass') {
-            return redirect()->route('quality.coaching.create', ['evaluation_id' => $eval->id])
-                ->with('info', 'Evaluation saved. Consider adding a coaching note.');
+            return $this->ajaxSuccess('Evaluation saved. Consider adding a coaching note.', route('quality.coaching.create', ['evaluation_id' => $eval->id]));
         }
 
-        return redirect()->route('quality.evaluations')->with('success', 'Evaluation saved.');
+        return $this->ajaxSuccess('Evaluation saved successfully.', route('quality.evaluations'));
     }
 
     public function evaluationsShow(QualityEvaluation $evaluation)
@@ -155,12 +156,12 @@ class QualityController extends Controller
         $validated['created_by'] = auth()->id();
         $validated['status'] = 'open';
         CoachingNote::create($validated);
-        return redirect()->route('quality.coaching')->with('success', 'Coaching note added.');
+        return $this->ajaxSuccess('Coaching note added successfully.', route('quality.coaching'));
     }
 
     public function coachingDone(CoachingNote $note)
     {
         $note->update(['status' => 'done']);
-        return back()->with('success', 'Coaching note marked as done.');
+        return $this->ajaxSuccess('Coaching note marked as done successfully.');
     }
 }

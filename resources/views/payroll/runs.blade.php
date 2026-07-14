@@ -10,7 +10,7 @@
         <h2 class="text-lg font-bold text-gray-900">Payroll Runs</h2>
         <p class="text-xs text-gray-500">Create and manage payroll cycles</p>
     </div>
-    <button onclick="document.getElementById('modal-pr').classList.remove('hidden')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
+    <button onclick="openModal('modal-pr')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         New Run
     </button>
@@ -60,10 +60,10 @@
 </div>
 
 <div id="modal-pr" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="document.getElementById('modal-pr').classList.add('hidden')"></div>
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('modal-pr')"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white rounded-xl shadow-xl p-5">
         <h3 class="text-sm font-semibold text-gray-900 mb-4">New Payroll Run</h3>
-        <form method="POST" action="{{ route('payroll.runs.store') }}" class="space-y-3">
+        <form method="POST" action="{{ route('payroll.runs.store') }}" class="space-y-3" data-ajax data-close-modal="modal-pr" data-reset-on-success="true">
             @csrf
             <div class="grid grid-cols-2 gap-3">
                 <div><label class="block text-xs font-medium text-gray-600 mb-1">Year <span class="text-red-500">*</span></label><input type="number" name="period_year" value="{{ now()->year }}" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></div>
@@ -75,7 +75,7 @@
             </div>
             <div class="flex gap-2 pt-2">
                 <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700">Create</button>
-                <button type="button" onclick="document.getElementById('modal-pr').classList.add('hidden')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="button" onclick="closeModal('modal-pr')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
             </div>
         </form>
     </div>

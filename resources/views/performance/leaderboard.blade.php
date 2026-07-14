@@ -24,7 +24,7 @@
     @php $rank = $i + 1; @endphp
     @php $gradeColors = ['A'=>'green','B'=>'sky','C'=>'amber','D'=>'copper','E'=>'red']; @endphp
     @php $gc = $gradeColors[$ev->grade] ?? 'gray'; @endphp
-    <div class="bg-white rounded-xl border p-4 flex items-center gap-4 {{ $rank <= 3 ? 'border-{{ $gc }}-200' : '' }}">
+    <div class="bg-white rounded-xl border p-4 flex items-center gap-4 {{ $rank <= 3 ? 'border-' . $gc . '-200' : '' }}">
         <div class="w-8 text-center">
             @if($rank === 1)
                 <span class="text-lg">🥇</span>

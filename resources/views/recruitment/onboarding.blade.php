@@ -42,7 +42,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             @foreach($ob->tasks as $task)
             <div class="flex items-center gap-2 text-xs">
-                <form method="POST" action="{{ route('recruitment.onboarding.toggle-task', $task) }}" class="inline">
+                <form method="POST" action="{{ route('recruitment.onboarding.toggle-task', $task) }}" class="inline" data-ajax>
                     @csrf
                     <button type="submit" class="w-4 h-4 rounded border {{ $task->is_done ? 'bg-green-500 border-green-500' : 'border-gray-300' }} flex items-center justify-center hover:border-navy-400 transition-colors">
                         @if($task->is_done)<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>@endif

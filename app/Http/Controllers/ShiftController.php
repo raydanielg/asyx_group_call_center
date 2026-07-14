@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ShiftController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -40,7 +42,7 @@ class ShiftController extends Controller
         $validated['crosses_midnight'] = $end < $start;
 
         Shift::create($validated);
-        return back()->with('success', 'Shift created.');
+        return $this->ajaxSuccess('Shift created successfully.');
     }
 
     public function update(Request $request, Shift $shift)
@@ -59,13 +61,13 @@ class ShiftController extends Controller
         ]);
 
         $shift->update($validated);
-        return back()->with('success', 'Shift updated.');
+        return $this->ajaxSuccess('Shift updated successfully.');
     }
 
     public function destroy(Shift $shift)
     {
         $shift->delete();
-        return back()->with('success', 'Shift deleted.');
+        return $this->ajaxSuccess('Shift deleted successfully.');
     }
 
     public function planner(Request $request)
@@ -106,7 +108,7 @@ class ShiftController extends Controller
             ]
         );
 
-        return response()->json(['success' => true, 'message' => 'Shift assigned.']);
+        return $this->ajaxSuccess('Shift assigned successfully.');
     }
 
     public function unassign(Request $request)
@@ -120,7 +122,7 @@ class ShiftController extends Controller
             ->where('date', $validated['date'])
             ->delete();
 
-        return response()->json(['success' => true, 'message' => 'Shift unassigned.']);
+        return $this->ajaxSuccess('Shift unassigned successfully.');
     }
 
     public function rotations()
@@ -145,12 +147,12 @@ class ShiftController extends Controller
         ]);
 
         ShiftRotation::create($validated);
-        return back()->with('success', 'Rotation created.');
+        return $this->ajaxSuccess('Rotation created successfully.');
     }
 
     public function rotationsDestroy(ShiftRotation $rotation)
     {
         $rotation->delete();
-        return back()->with('success', 'Rotation deleted.');
+        return $this->ajaxSuccess('Rotation deleted successfully.');
     }
 }

@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -36,7 +38,7 @@ class OrganizationController extends Controller
             'timezone' => 'nullable|string|max:64',
         ]);
         Branch::create($validated);
-        return back()->with('success', 'Branch created.');
+        return $this->ajaxSuccess('Branch created successfully.');
     }
 
     public function branchesUpdate(Request $request, Branch $branch)
@@ -51,13 +53,13 @@ class OrganizationController extends Controller
             'is_active' => 'boolean',
         ]);
         $branch->update($validated);
-        return back()->with('success', 'Branch updated.');
+        return $this->ajaxSuccess('Branch updated successfully.');
     }
 
     public function branchesDestroy(Branch $branch)
     {
         $branch->delete();
-        return back()->with('success', 'Branch deleted.');
+        return $this->ajaxSuccess('Branch deleted successfully.');
     }
 
     // Departments
@@ -78,7 +80,7 @@ class OrganizationController extends Controller
             'parent_id' => 'nullable|exists:departments,id',
         ]);
         Department::create($validated);
-        return back()->with('success', 'Department created.');
+        return $this->ajaxSuccess('Department created successfully.');
     }
 
     public function departmentsUpdate(Request $request, Department $department)
@@ -91,13 +93,13 @@ class OrganizationController extends Controller
             'is_active' => 'boolean',
         ]);
         $department->update($validated);
-        return back()->with('success', 'Department updated.');
+        return $this->ajaxSuccess('Department updated successfully.');
     }
 
     public function departmentsDestroy(Department $department)
     {
         $department->delete();
-        return back()->with('success', 'Department deleted.');
+        return $this->ajaxSuccess('Department deleted successfully.');
     }
 
     // Positions
@@ -119,7 +121,7 @@ class OrganizationController extends Controller
             'max_salary' => 'nullable|numeric|min:0',
         ]);
         Position::create($validated);
-        return back()->with('success', 'Position created.');
+        return $this->ajaxSuccess('Position created successfully.');
     }
 
     public function positionsUpdate(Request $request, Position $position)
@@ -134,13 +136,13 @@ class OrganizationController extends Controller
             'is_active' => 'boolean',
         ]);
         $position->update($validated);
-        return back()->with('success', 'Position updated.');
+        return $this->ajaxSuccess('Position updated successfully.');
     }
 
     public function positionsDestroy(Position $position)
     {
         $position->delete();
-        return back()->with('success', 'Position deleted.');
+        return $this->ajaxSuccess('Position deleted successfully.');
     }
 
     // Teams
@@ -158,7 +160,7 @@ class OrganizationController extends Controller
             'department_id' => 'required|exists:departments,id',
         ]);
         Team::create($validated);
-        return back()->with('success', 'Team created.');
+        return $this->ajaxSuccess('Team created successfully.');
     }
 
     public function teamsUpdate(Request $request, Team $team)
@@ -169,13 +171,13 @@ class OrganizationController extends Controller
             'is_active' => 'boolean',
         ]);
         $team->update($validated);
-        return back()->with('success', 'Team updated.');
+        return $this->ajaxSuccess('Team updated successfully.');
     }
 
     public function teamsDestroy(Team $team)
     {
         $team->delete();
-        return back()->with('success', 'Team deleted.');
+        return $this->ajaxSuccess('Team deleted successfully.');
     }
 
     // Working Hours
@@ -200,7 +202,7 @@ class OrganizationController extends Controller
             WorkingHourPolicy::where('is_default', true)->update(['is_default' => false]);
         }
         WorkingHourPolicy::create($validated);
-        return back()->with('success', 'Working hour policy created.');
+        return $this->ajaxSuccess('Working hour policy created successfully.');
     }
 
     public function workingHoursUpdate(Request $request, WorkingHourPolicy $policy)
@@ -218,13 +220,13 @@ class OrganizationController extends Controller
             WorkingHourPolicy::where('is_default', true)->where('id', '!=', $policy->id)->update(['is_default' => false]);
         }
         $policy->update($validated);
-        return back()->with('success', 'Working hour policy updated.');
+        return $this->ajaxSuccess('Working hour policy updated successfully.');
     }
 
     public function workingHoursDestroy(WorkingHourPolicy $policy)
     {
         $policy->delete();
-        return back()->with('success', 'Policy deleted.');
+        return $this->ajaxSuccess('Working hour policy deleted successfully.');
     }
 
     // Holidays
@@ -244,13 +246,13 @@ class OrganizationController extends Controller
             'branch_id' => 'nullable|exists:branches,id',
         ]);
         Holiday::create($validated);
-        return back()->with('success', 'Holiday created.');
+        return $this->ajaxSuccess('Holiday created successfully.');
     }
 
     public function holidaysDestroy(Holiday $holiday)
     {
         $holiday->delete();
-        return back()->with('success', 'Holiday deleted.');
+        return $this->ajaxSuccess('Holiday deleted successfully.');
     }
 
     // Company Policies
@@ -269,7 +271,7 @@ class OrganizationController extends Controller
             'effective_from' => 'nullable|date',
         ]);
         CompanyPolicy::create($validated);
-        return back()->with('success', 'Policy created.');
+        return $this->ajaxSuccess('Policy created successfully.');
     }
 
     public function policiesUpdate(Request $request, CompanyPolicy $policy)
@@ -282,12 +284,12 @@ class OrganizationController extends Controller
             'is_active' => 'boolean',
         ]);
         $policy->update($validated);
-        return back()->with('success', 'Policy updated.');
+        return $this->ajaxSuccess('Policy updated successfully.');
     }
 
     public function policiesDestroy(CompanyPolicy $policy)
     {
         $policy->delete();
-        return back()->with('success', 'Policy deleted.');
+        return $this->ajaxSuccess('Company policy deleted successfully.');
     }
 }

@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -117,7 +119,7 @@ class EmployeeController extends Controller
 
         AuditLog::log('employee.created', $employee);
 
-        return redirect()->route('employees.show', $employee->id)->with('success', 'Employee created successfully!');
+        return $this->ajaxSuccess('Employee created successfully!', route('employees.show', $employee->id));
     }
 
     public function show(Employee $employee)
@@ -176,14 +178,14 @@ class EmployeeController extends Controller
         $employee->update($validated);
         AuditLog::log('employee.updated', $employee, $old, $validated);
 
-        return redirect()->route('employees.show', $employee->id)->with('success', 'Employee updated successfully!');
+        return $this->ajaxSuccess('Employee updated successfully!', route('employees.show', $employee->id));
     }
 
     public function destroy(Employee $employee)
     {
         $employee->delete();
         AuditLog::log('employee.deleted', $employee);
-        return redirect()->route('employees.index')->with('success', 'Employee deleted.');
+        return $this->ajaxSuccess('Employee deleted successfully.', route('employees.index'));
     }
 
     public function terminate(Request $request, Employee $employee)
@@ -200,7 +202,7 @@ class EmployeeController extends Controller
         ]);
 
         AuditLog::log('employee.terminated', $employee);
-        return redirect()->route('employees.show', $employee->id)->with('success', 'Employee terminated.');
+        return $this->ajaxSuccess('Employee terminated successfully.', route('employees.show', $employee->id));
     }
 
     public function storeDocument(Request $request, Employee $employee)
@@ -227,7 +229,7 @@ class EmployeeController extends Controller
             'expires_at' => $validated['expires_at'] ?? null,
         ]);
 
-        return back()->with('success', 'Document uploaded.');
+        return $this->ajaxSuccess('Document uploaded successfully.');
     }
 
     public function storeContract(Request $request, Employee $employee)
@@ -241,7 +243,7 @@ class EmployeeController extends Controller
 
         EmployeeContract::create(array_merge($validated, ['employee_id' => $employee->id, 'status' => 'active']));
         AuditLog::log('employee.contract.added', $employee);
-        return back()->with('success', 'Contract added.');
+        return $this->ajaxSuccess('Contract added successfully.');
     }
 
     public function storeSalary(Request $request, Employee $employee)
@@ -258,7 +260,7 @@ class EmployeeController extends Controller
         ]));
 
         AuditLog::log('employee.salary.updated', $employee);
-        return back()->with('success', 'Salary record added.');
+        return $this->ajaxSuccess('Salary record added successfully.');
     }
 
     public function storeBankAccount(Request $request, Employee $employee)
@@ -278,7 +280,7 @@ class EmployeeController extends Controller
         }
 
         EmployeeBankAccount::create(array_merge($validated, ['employee_id' => $employee->id]));
-        return back()->with('success', 'Bank account added.');
+        return $this->ajaxSuccess('Bank account added successfully.');
     }
 
     public function storeEmergencyContact(Request $request, Employee $employee)
@@ -292,7 +294,7 @@ class EmployeeController extends Controller
         ]);
 
         EmployeeEmergencyContact::create(array_merge($validated, ['employee_id' => $employee->id]));
-        return back()->with('success', 'Emergency contact added.');
+        return $this->ajaxSuccess('Emergency contact added successfully.');
     }
 
     public function documentsExpiry()

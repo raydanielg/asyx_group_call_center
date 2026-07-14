@@ -10,7 +10,7 @@
         <h2 class="text-lg font-bold text-gray-900">Shift Rotations</h2>
         <p class="text-xs text-gray-500">Define recurring rotation patterns</p>
     </div>
-    <button onclick="document.getElementById('modal-rot').classList.remove('hidden')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
+    <button onclick="openModal('modal-rot')" class="px-3 py-2 text-xs font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors inline-flex items-center gap-1.5 self-start">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Add Rotation
     </button>
@@ -38,7 +38,7 @@
                     <td class="px-5 py-3 text-gray-500">{{ $r->department?->name ?? $r->team?->name ?? 'All' }}</td>
                     <td class="px-5 py-3 text-gray-500">{{ $r->start_date?->format('M d, Y') ?? 'N/A' }}</td>
                     <td class="px-5 py-3 text-right">
-                        <form method="POST" action="{{ route('shifts.rotations.destroy', $r) }}" class="inline" onsubmit="return confirm('Delete?')">
+                        <form method="POST" action="{{ route('shifts.rotations.destroy', $r) }}" class="inline" data-ajax data-confirm="Delete this rotation?">
                             @csrf @method('DELETE')
                             <button type="submit" class="text-xs text-red-500 hover:text-red-600 font-medium">Delete</button>
                         </form>
@@ -54,10 +54,10 @@
 </div>
 
 <div id="modal-rot" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="document.getElementById('modal-rot').classList.add('hidden')"></div>
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal('modal-rot')"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-xl shadow-xl p-5">
         <h3 class="text-sm font-semibold text-gray-900 mb-4">Add Rotation</h3>
-        <form method="POST" action="{{ route('shifts.rotations.store') }}" class="space-y-3">
+        <form method="POST" action="{{ route('shifts.rotations.store') }}" class="space-y-3" data-ajax data-close-modal="modal-rot" data-reset-on-success="true">
             @csrf
             <div><label class="block text-xs font-medium text-gray-600 mb-1">Name <span class="text-red-500">*</span></label><input type="text" name="name" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></div>
             <div><label class="block text-xs font-medium text-gray-600 mb-1">Shift</label>
@@ -89,7 +89,7 @@
             <div><label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label><input type="date" name="start_date" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></div>
             <div class="flex gap-2 pt-2">
                 <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700">Add</button>
-                <button type="button" onclick="document.getElementById('modal-rot').classList.add('hidden')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="button" onclick="closeModal('modal-rot')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
             </div>
         </form>
     </div>

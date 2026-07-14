@@ -37,7 +37,7 @@
                         <div class="font-medium text-gray-900">{{ $c->label }}</div>
                         <div class="text-gray-400">Weight: {{ $c->weight }} · Max: {{ $c->max_points }} pts</div>
                     </div>
-                    <form method="POST" action="{{ route('quality.criteria.destroy', $c) }}" class="inline" onsubmit="return confirm('Delete?')">
+                    <form method="POST" action="{{ route('quality.criteria.destroy', $c) }}" class="inline" data-ajax data-confirm="Delete this criterion?">
                         @csrf @method('DELETE')
                         <button type="submit" class="text-red-500 hover:text-red-600 font-medium">Delete</button>
                     </form>
@@ -49,7 +49,7 @@
 
             <details class="mt-4">
                 <summary class="text-xs font-medium text-navy-600 cursor-pointer hover:text-navy-700">+ Add Criterion</summary>
-                <form method="POST" action="{{ route('quality.forms.criteria.store', $form) }}" class="mt-3 space-y-2">
+                <form method="POST" action="{{ route('quality.forms.criteria.store', $form) }}" class="mt-3 space-y-2" data-ajax data-reset-on-success="true">
                     @csrf
                     <input type="text" name="label" placeholder="Criterion label" required class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg outline-none focus:border-navy-300">
                     <div class="grid grid-cols-2 gap-2">

@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -70,7 +72,7 @@ class AttendanceController extends Controller
             ]
         );
 
-        return response()->json(['success' => true, 'message' => 'Attendance saved.']);
+        return $this->ajaxSuccess('Attendance saved successfully.');
     }
 
     public function bulkMark(Request $request)
@@ -92,7 +94,7 @@ class AttendanceController extends Controller
             );
         }
 
-        return response()->json(['success' => true, 'message' => count($validated['employee_ids']) . ' records marked.']);
+        return $this->ajaxSuccess(count($validated['employee_ids']) . ' attendance records marked successfully.');
     }
 
     public function missing(Request $request)
@@ -119,7 +121,7 @@ class AttendanceController extends Controller
     public function approveOvertime(AttendanceRecord $record)
     {
         $record->update(['overtime_approved' => true]);
-        return back()->with('success', 'Overtime approved.');
+        return $this->ajaxSuccess('Overtime approved successfully.');
     }
 
     public function summary(Request $request)

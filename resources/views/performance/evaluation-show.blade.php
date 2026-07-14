@@ -34,7 +34,7 @@
                 <div class="flex justify-between"><dt class="text-gray-500">Status</dt><dd><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium {{ $evaluation->status === 'finalized' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }}">{{ ucfirst($evaluation->status) }}</span></dd></div>
             </dl>
             @if($evaluation->status !== 'finalized')
-            <form method="POST" action="{{ route('performance.evaluations.finalize', $evaluation) }}" class="mt-4">
+            <form method="POST" action="{{ route('performance.evaluations.finalize', $evaluation) }}" class="mt-4" data-ajax data-confirm="Finalize this evaluation?">
                 @csrf
                 <button type="submit" class="w-full px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700">Finalize</button>
             </form>

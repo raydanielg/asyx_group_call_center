@@ -369,6 +369,308 @@
         menu.classList.toggle('open');
         if (arrow) arrow.classList.toggle('rotate-180');
     }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // GLOBAL AJAX + SWEETALERT2 SYSTEM
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    (function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+
+        // Toast mixin for quick notifications
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            customClass: { popup: 'swal2-toast' },
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+        window.Toast = Toast;
+
+        // Confirm dialog mixin
+        const ConfirmMixin = Swal.mixin({
+            customClass: {
+                popup: 'swal2-popup',
+                confirmButton: 'swal2-confirm bg-red-500 hover:bg-red-600 text-white',
+                cancelButton: 'swal2-confirm bg-gray-200 hover:bg-gray-300 text-gray-700'
+            },
+            buttonsStyling: false,
+        });
+        window.ConfirmMixin = ConfirmMixin;
+
+        // AJAX loader
+        function showLoader() {
+            let loader = document.getElementById('ajaxProgress');
+            if (!loader) {
+                loader = document.createElement('div');
+                loader.id = 'ajaxProgress';
+                loader.style.cssText = 'position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0D3E63,#A56035,#0D3E63);background-size:200% 100%;animation:ajaxProgress 1s linear infinite;z-index:9999;';
+                document.body.appendChild(loader);
+                if (!document.getElementById('ajaxProgressStyle')) {
+                    const style = document.createElement('style');
+                    style.id = 'ajaxProgressStyle';
+                    style.textContent = '@keyframes ajaxProgress{0%{background-position:100% 0}100%{background-position:-100% 0}}';
+                    document.head.appendChild(style);
+                }
+            }
+            loader.style.display = 'block';
+        }
+        function hideLoader() {
+            const loader = document.getElementById('ajaxProgress');
+            if (loader) loader.style.display = 'none';
+        }
+
+        // Show toast notification
+        window.notify = function(type, title, message) {
+            const colors = { success: '#0D3E63', error: '#EC2226', warning: '#A56035', info: '#632871' };
+            Toast.fire({
+                icon: type,
+                title: title + (message ? ': ' + message : ''),
+                iconColor: colors[type] || '#0D3E63'
+            });
+        };
+
+        // Show confirmation dialog
+        window.confirmAction = function(options) {
+            return Swal.fire({
+                title: options.title || 'Are you sure?',
+                text: options.text || '',
+                icon: options.icon || 'warning',
+                showCancelButton: true,
+                confirmButtonText: options.confirmText || 'Yes, delete it!',
+                cancelButtonText: options.cancelText || 'Cancel',
+                customClass: {
+                    popup: 'swal2-popup',
+                    confirmButton: 'swal2-confirm ' + (options.confirmClass || 'bg-red-500 hover:bg-red-600 text-white'),
+                    cancelButton: 'swal2-confirm bg-gray-200 hover:bg-gray-300 text-gray-700'
+                },
+                buttonsStyling: false,
+                reverseButtons: true,
+            });
+        };
+
+        // Core AJAX function
+        window.ajaxRequest = function(url, method, data, options) {
+            options = options || {};
+            showLoader();
+
+            const headers = {
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            };
+
+            const fetchOptions = {
+                method: method,
+                headers: headers,
+                credentials: 'same-origin'
+            };
+
+            if (data instanceof FormData) {
+                fetchOptions.body = data;
+                if (method !== 'POST') {
+                    data.append('_method', method);
+                    fetchOptions.method = 'POST';
+                }
+            } else if (data) {
+                headers['Content-Type'] = 'application/json';
+                fetchOptions.body = JSON.stringify(data);
+            }
+
+            return fetch(url, fetchOptions)
+                .then(r => {
+                    const contentType = r.headers.get('content-type') || '';
+                    if (contentType.includes('application/json')) {
+                        return r.json().then(d => ({ data: d, status: r.status, ok: r.ok }));
+                    }
+                    return r.text().then(html => ({ html, status: r.status, ok: r.ok }));
+                })
+                .then(result => {
+                    hideLoader();
+                    if (result.data !== undefined) {
+                        if (!result.ok) {
+                            if (result.status === 422 && result.data.errors) {
+                                const msgs = Object.values(result.data.errors).flat();
+                                notify('error', 'Validation Error', msgs.join('. '));
+                            } else {
+                                notify('error', 'Error', result.data.message || 'Something went wrong');
+                            }
+                            if (options.onError) options.onError(result.data);
+                            return Promise.reject(result.data);
+                        }
+                        if (result.data.message) {
+                            notify(result.data.type || 'success', result.data.title || 'Success', result.data.message);
+                        }
+                        if (options.onSuccess) options.onSuccess(result.data);
+                        if (result.data.redirect) {
+                            setTimeout(() => { window.location.href = result.data.redirect; }, 1000);
+                        } else if (options.reload !== false) {
+                            setTimeout(() => { window.location.reload(); }, 800);
+                        }
+                        return result.data;
+                    }
+                    if (result.html && options.onHtml) {
+                        options.onHtml(result.html);
+                    }
+                    return result;
+                })
+                .catch(err => {
+                    hideLoader();
+                    if (err && err.message) notify('error', 'Error', err.message);
+                    return Promise.reject(err);
+                });
+        };
+
+        // Intercept all forms with data-ajax or class ajax-form
+        function bindAjaxForms() {
+            document.querySelectorAll('form[data-ajax], form.ajax-form').forEach(form => {
+                if (form._ajaxBound) return;
+                form._ajaxBound = true;
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const btn = form.querySelector('button[type="submit"]');
+                    const method = (form.querySelector('input[name="_method"]')?.value || form.method || 'POST').toUpperCase();
+                    const isDelete = method === 'DELETE';
+                    const confirmMsg = form.dataset.confirm || (isDelete ? 'Delete this item?' : null);
+
+                    function submitForm() {
+                        if (btn) { btn.disabled = true; btn.classList.add('btn-loading'); }
+                        const formData = new FormData(form);
+                        ajaxRequest(form.action, method, formData, {
+                            reload: form.dataset.noReload !== 'true',
+                            onSuccess: (data) => {
+                                if (form.dataset.closeModal) {
+                                    const modal = document.getElementById(form.dataset.closeModal);
+                                    if (modal) modal.classList.add('hidden');
+                                }
+                                if (form.dataset.resetOnSuccess === 'true') form.reset();
+                            },
+                            onError: () => {
+                                if (btn) { btn.disabled = false; btn.classList.remove('btn-loading'); }
+                            }
+                        });
+                    }
+
+                    if (confirmMsg) {
+                        confirmAction({
+                            title: confirmMsg,
+                            text: form.dataset.confirmText || '',
+                            confirmText: form.dataset.confirmText || 'Yes, delete it!',
+                            icon: form.dataset.confirmIcon || 'warning',
+                            confirmClass: form.dataset.confirmClass || 'bg-red-500 hover:bg-red-600 text-white',
+                        }).then(result => {
+                            if (result.isConfirmed) submitForm();
+                        });
+                    } else {
+                        submitForm();
+                    }
+                });
+            });
+        }
+
+        // Intercept delete buttons with data-delete-url
+        function bindDeleteButtons() {
+            document.querySelectorAll('[data-delete-url]').forEach(btn => {
+                if (btn._deleteBound) return;
+                btn._deleteBound = true;
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.dataset.deleteUrl;
+                    const confirmMsg = this.dataset.confirm || 'Delete this item?';
+                    const confirmText = this.dataset.confirmText || 'Yes, delete it!';
+                    const rowId = this.dataset.rowId;
+
+                    confirmAction({
+                        title: confirmMsg,
+                        text: this.dataset.confirmText || 'This action cannot be undone.',
+                        confirmText: confirmText,
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            ajaxRequest(url, 'DELETE').then(data => {
+                                if (rowId) {
+                                    const row = document.getElementById(rowId);
+                                    if (row) {
+                                        row.style.transition = 'opacity 0.3s';
+                                        row.style.opacity = '0';
+                                        setTimeout(() => row.remove(), 300);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        }
+
+        // Intercept action buttons with data-action-url (for approve, reject, etc.)
+        function bindActionButtons() {
+            document.querySelectorAll('[data-action-url]').forEach(btn => {
+                if (btn._actionBound) return;
+                btn._actionBound = true;
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.dataset.actionUrl;
+                    const method = this.dataset.actionMethod || 'POST';
+                    const confirmMsg = this.dataset.confirm;
+
+                    function doAction() {
+                        if (btn) { btn.disabled = true; btn.classList.add('btn-loading'); }
+                        ajaxRequest(url, method, null, {
+                            reload: true,
+                            onSuccess: () => {
+                                if (btn) { btn.disabled = false; btn.classList.remove('btn-loading'); }
+                            },
+                            onError: () => {
+                                if (btn) { btn.disabled = false; btn.classList.remove('btn-loading'); }
+                            }
+                        });
+                    }
+
+                    if (confirmMsg) {
+                        confirmAction({
+                            title: confirmMsg,
+                            text: this.dataset.confirmText || '',
+                            confirmText: this.dataset.confirmText || 'Yes, proceed',
+                            confirmClass: this.dataset.confirmClass || 'bg-navy-500 hover:bg-navy-600 text-white',
+                            icon: this.dataset.confirmIcon || 'question',
+                        }).then(result => {
+                            if (result.isConfirmed) doAction();
+                        });
+                    } else {
+                        doAction();
+                    }
+                });
+            });
+        }
+
+        // Modal helpers
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('hidden');
+        };
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        };
+
+        // Initialize on load and after AJAX content updates
+        function initAjax() {
+            bindAjaxForms();
+            bindDeleteButtons();
+            bindActionButtons();
+        }
+
+        // Re-bind when DOM changes
+        const observer = new MutationObserver(() => initAjax());
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        initAjax();
+    })();
     </script>
     @stack('scripts')
 </body>

@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class LeaveController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -34,7 +36,7 @@ class LeaveController extends Controller
             'gender_restriction' => 'required|in:any,male,female',
         ]);
         LeaveType::create($validated);
-        return back()->with('success', 'Leave type created.');
+        return $this->ajaxSuccess('Leave type created successfully.');
     }
 
     public function typesUpdate(Request $request, LeaveType $type)
@@ -51,13 +53,13 @@ class LeaveController extends Controller
             'is_active' => 'boolean',
         ]);
         $type->update($validated);
-        return back()->with('success', 'Leave type updated.');
+        return $this->ajaxSuccess('Leave type updated successfully.');
     }
 
     public function typesDestroy(LeaveType $type)
     {
         $type->delete();
-        return back()->with('success', 'Leave type deleted.');
+        return $this->ajaxSuccess('Leave type deleted successfully.');
     }
 
     public function requestsIndex(Request $request)
@@ -99,7 +101,7 @@ class LeaveController extends Controller
             'recorded_by' => auth()->id(),
         ]));
 
-        return back()->with('success', 'Leave request recorded.');
+        return $this->ajaxSuccess('Leave request recorded successfully.');
     }
 
     public function requestsApprove(LeaveRequest $leaveRequest)
@@ -127,7 +129,7 @@ class LeaveController extends Controller
             ['status' => 'on_leave', 'recorded_by' => auth()->id(), 'source' => 'manual']
         );
 
-        return back()->with('success', 'Leave approved.');
+        return $this->ajaxSuccess('Leave request approved successfully.');
     }
 
     public function requestsReject(Request $request, LeaveRequest $leaveRequest)
@@ -139,7 +141,7 @@ class LeaveController extends Controller
             'decided_at' => now(),
             'decision_note' => $validated['decision_note'],
         ]);
-        return back()->with('success', 'Leave rejected.');
+        return $this->ajaxSuccess('Leave request rejected successfully.');
     }
 
     public function requestsCancel(LeaveRequest $leaveRequest)
@@ -155,7 +157,7 @@ class LeaveController extends Controller
         }
 
         $leaveRequest->update(['status' => 'cancelled']);
-        return back()->with('success', 'Leave cancelled.');
+        return $this->ajaxSuccess('Leave request cancelled successfully.');
     }
 
     public function balances(Request $request)

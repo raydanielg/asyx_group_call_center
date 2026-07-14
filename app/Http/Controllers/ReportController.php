@@ -151,10 +151,10 @@ class ReportController extends Controller
         ];
 
         $daily = $stats->groupBy(fn($s) => $s->date->format('M d'));
-        $trendLabels = $daily->keys()->toArray();
-        $callsTrend = $daily->map(fn($g) => $g->sum('total_calls'))->toArray();
-        $ahtTrend = $daily->map(fn($g) => round($g->avg('aht_seconds') ?? 0, 1))->toArray();
-        $csatTrend = $daily->map(fn($g) => round($g->avg('csat_score') ?? 0, 2))->toArray();
+        $trendLabels = array_values($daily->keys()->toArray());
+        $callsTrend = array_values($daily->map(fn($g) => $g->sum('total_calls'))->toArray());
+        $ahtTrend = array_values($daily->map(fn($g) => round($g->avg('aht_seconds') ?? 0, 1))->toArray());
+        $csatTrend = array_values($daily->map(fn($g) => round($g->avg('csat_score') ?? 0, 2))->toArray());
 
         $byEmployee = $stats->groupBy('employee_id')->map(function($g) {
             return [

@@ -33,7 +33,7 @@
         <div class="flex items-center gap-2 shrink-0">
             <a href="{{ route('employees.edit', $employee) }}" class="px-3 py-2 text-xs font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Edit</a>
             @if(!in_array($employee->employment_status, ['terminated','resigned']))
-            <form method="POST" action="{{ route('employees.terminate', $employee) }}" onsubmit="return confirm('Terminate this employee?')" class="inline">
+            <form method="POST" action="{{ route('employees.terminate', $employee) }}" class="inline" data-ajax data-confirm="Terminate this employee?">
                 @csrf
                 <button type="submit" class="px-3 py-2 text-xs font-medium bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">Terminate</button>
             </form>
@@ -96,7 +96,7 @@
             </div>
             <details class="mt-3">
                 <summary class="text-xs font-medium text-navy-600 cursor-pointer hover:text-navy-700">+ Add Contact</summary>
-                <form method="POST" action="{{ route('employees.emergency-contacts.store', $employee) }}" class="mt-3 space-y-2">
+                <form method="POST" action="{{ route('employees.emergency-contacts.store', $employee) }}" class="mt-3 space-y-2" data-ajax data-reset-on-success="true">
                     @csrf
                     <input type="text" name="name" placeholder="Name" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none focus:border-navy-300" required>
                     <input type="text" name="relationship" placeholder="Relationship" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none focus:border-navy-300" required>
@@ -129,7 +129,7 @@
             </div>
             <details class="mt-3">
                 <summary class="text-xs font-medium text-navy-600 cursor-pointer hover:text-navy-700">+ Upload Document</summary>
-                <form method="POST" action="{{ route('employees.documents.store', $employee) }}" enctype="multipart/form-data" class="mt-3 space-y-2">
+                <form method="POST" action="{{ route('employees.documents.store', $employee) }}" enctype="multipart/form-data" class="mt-3 space-y-2" data-ajax data-reset-on-success="true">
                     @csrf
                     <select name="category" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none" required>
                         @foreach(['contract','cv','certificate','id_copy','warning_letter','other'] as $cat)
@@ -163,7 +163,7 @@
             </div>
             <details class="mt-3">
                 <summary class="text-xs font-medium text-navy-600 cursor-pointer hover:text-navy-700">+ Add Contract</summary>
-                <form method="POST" action="{{ route('employees.contracts.store', $employee) }}" class="mt-3 space-y-2">
+                <form method="POST" action="{{ route('employees.contracts.store', $employee) }}" class="mt-3 space-y-2" data-ajax data-reset-on-success="true">
                     @csrf
                     <select name="contract_type" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none" required>
                         @foreach(['permanent','fixed_term','probation'] as $ct)
@@ -195,7 +195,7 @@
             </div>
             <details class="mt-3">
                 <summary class="text-xs font-medium text-navy-600 cursor-pointer hover:text-navy-700">+ Add Salary Record</summary>
-                <form method="POST" action="{{ route('employees.salaries.store', $employee) }}" class="mt-3 space-y-2">
+                <form method="POST" action="{{ route('employees.salaries.store', $employee) }}" class="mt-3 space-y-2" data-ajax data-reset-on-success="true">
                     @csrf
                     <input type="date" name="effective_from" placeholder="Effective From" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none" required>
                     <input type="number" step="0.01" name="base_salary" placeholder="Base Salary" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none" required>
@@ -227,7 +227,7 @@
             </div>
             <details class="mt-3">
                 <summary class="text-xs font-medium text-navy-600 cursor-pointer hover:text-navy-700">+ Add Bank Account</summary>
-                <form method="POST" action="{{ route('employees.bank-accounts.store', $employee) }}" class="mt-3 space-y-2">
+                <form method="POST" action="{{ route('employees.bank-accounts.store', $employee) }}" class="mt-3 space-y-2" data-ajax data-reset-on-success="true">
                     @csrf
                     <input type="text" name="bank_name" placeholder="Bank Name" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none" required>
                     <input type="text" name="account_name" placeholder="Account Name" class="w-full px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg outline-none" required>

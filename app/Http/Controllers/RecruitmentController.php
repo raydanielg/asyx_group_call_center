@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 
 class RecruitmentController extends Controller
 {
+    use AjaxResponseTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -47,7 +49,7 @@ class RecruitmentController extends Controller
         $validated['created_by'] = auth()->id();
 
         JobPosition::create($validated);
-        return back()->with('success', 'Job position created.');
+        return $this->ajaxSuccess('Job position created successfully.');
     }
 
     public function jobsUpdate(Request $request, JobPosition $job)
@@ -66,13 +68,13 @@ class RecruitmentController extends Controller
             'status' => 'required|in:draft,open,on_hold,closed',
         ]);
         $job->update($validated);
-        return back()->with('success', 'Job position updated.');
+        return $this->ajaxSuccess('Job position updated successfully.');
     }
 
     public function jobsDestroy(JobPosition $job)
     {
         $job->delete();
-        return back()->with('success', 'Job position deleted.');
+        return $this->ajaxSuccess('Job position deleted successfully.');
     }
 
     // Applicants
@@ -117,7 +119,7 @@ class RecruitmentController extends Controller
         ]);
         $validated['created_by'] = auth()->id();
         Applicant::create($validated);
-        return back()->with('success', 'Applicant added.');
+        return $this->ajaxSuccess('Applicant added successfully.');
     }
 
     public function applicantsShow(Applicant $applicant)
@@ -176,13 +178,13 @@ class RecruitmentController extends Controller
             }
         }
 
-        return back()->with('success', 'Applicant stage updated.');
+        return $this->ajaxSuccess('Applicant stage updated successfully.');
     }
 
     public function applicantsDestroy(Applicant $applicant)
     {
         $applicant->delete();
-        return back()->with('success', 'Applicant deleted.');
+        return $this->ajaxSuccess('Applicant deleted successfully.');
     }
 
     // Interviews
@@ -204,7 +206,7 @@ class RecruitmentController extends Controller
             'location' => 'nullable|string|max:200',
         ]);
         Interview::create($validated);
-        return back()->with('success', 'Interview scheduled.');
+        return $this->ajaxSuccess('Interview scheduled successfully.');
     }
 
     public function interviewsUpdate(Request $request, Interview $interview)
@@ -215,7 +217,7 @@ class RecruitmentController extends Controller
             'feedback' => 'nullable|string',
         ]);
         $interview->update($validated);
-        return back()->with('success', 'Interview updated.');
+        return $this->ajaxSuccess('Interview updated successfully.');
     }
 
     // Onboarding
@@ -240,6 +242,6 @@ class RecruitmentController extends Controller
             $onboarding->update(['status' => 'completed', 'completed_at' => now()]);
         }
 
-        return back()->with('success', 'Task updated.');
+        return $this->ajaxSuccess('Task updated successfully.');
     }
 }
