@@ -183,12 +183,11 @@
         }
 
         function rebindAjaxLinks() {
-            document.querySelectorAll('a[href]').forEach(function(link) {
+            document.querySelectorAll('a[data-ajax]').forEach(function(link) {
                 const href = link.getAttribute('href');
                 if (!href || href.startsWith('#') || href.startsWith('javascript') || href.startsWith('mailto') || href.startsWith('tel') || link.target === '_blank') return;
                 const url = new URL(href, location.href);
                 if (url.host !== location.host) return;
-                if (!url.pathname.match(/\/(login|register|password|verify)/)) return;
                 link.removeEventListener('click', handleAjaxClick);
                 link.addEventListener('click', handleAjaxClick);
             });
@@ -200,7 +199,7 @@
         }
 
         function rebindForms() {
-            document.querySelectorAll('form[method="POST"]').forEach(function(form) {
+            document.querySelectorAll('form[data-ajax]').forEach(function(form) {
                 form.removeEventListener('submit', handleAjaxSubmit);
                 form.addEventListener('submit', handleAjaxSubmit);
             });
