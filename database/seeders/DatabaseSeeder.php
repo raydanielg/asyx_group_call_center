@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $hrManager = User::firstOrCreate(
-            ['email' => 'hr@ayscallcenter.com'],
+            ['email' => 'hr@ayscallcenter.co.tz'],
             ['name' => 'HR Manager', 'first_name' => 'Jane', 'last_name' => 'Mwangi', 'phone' => '+255700000002', 'role' => 'admin', 'status' => 'active', 'password' => Hash::make('password'), 'email_verified_at' => now()]
         );
 
