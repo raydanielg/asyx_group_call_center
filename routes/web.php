@@ -105,6 +105,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/leave/requests/{leaveRequest}/reject', [App\Http\Controllers\LeaveController::class, 'requestsReject'])->name('leave.requests.reject');
     Route::post('/leave/requests/{leaveRequest}/cancel', [App\Http\Controllers\LeaveController::class, 'requestsCancel'])->name('leave.requests.cancel');
     Route::get('/leave/balances', [App\Http\Controllers\LeaveController::class, 'balances'])->name('leave.balances');
+    Route::post('/leave/balances', [App\Http\Controllers\LeaveController::class, 'balancesStore'])->name('leave.balances.store');
+    Route::put('/leave/balances/{balance}', [App\Http\Controllers\LeaveController::class, 'balancesUpdate'])->name('leave.balances.update');
+    Route::delete('/leave/balances/{balance}', [App\Http\Controllers\LeaveController::class, 'balancesDestroy'])->name('leave.balances.destroy');
     Route::get('/leave/employee/{employee}/history', [App\Http\Controllers\LeaveController::class, 'employeeHistory'])->name('leave.employee.history');
 
     // Payroll

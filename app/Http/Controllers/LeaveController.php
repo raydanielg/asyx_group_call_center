@@ -6,6 +6,7 @@ use App\Models\LeaveType;
 use App\Models\LeaveRequest;
 use App\Models\LeaveBalance;
 use App\Models\Employee;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 
 class LeaveController extends Controller
@@ -169,6 +170,67 @@ class LeaveController extends Controller
         $types = LeaveType::where('is_active', true)->get();
 
         return view('leave.balances', compact('employees', 'types', 'year'));
+    }
+
+    public function balancesStore(Request $request)
+    {
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'leave_type_id' => 'required|exists:leave_types,id',
+            'year' => 'required|integer|min:2020|max:2099',
+            'entitled' => 'required|numeric|min:0',
+            'carried_over' => 'nullable|numeric|min:0',
+            'used' => 'nullable|numeric|min:0',
+        ]);
+
+        $existing = LeaveBalance::where('employee_id', $validated['employee_id'])
+            ->where('leave_type_id', $validated['leave_type_id'])
+            ->where('year', $validated['year'])
+            ->first();
+
+        if ($existing) {
+            return $this->ajaxError('A balance already exists for this employee, leave type, and year.', 422);
+        }
+
+        $balance = LeaveBalance::create([
+            'employee_id' => $validated['employee_id'],
+            'leave_type_id' => $validated['leave_type_id'],
+            'year' => $validated['year'],
+            'entitled' => $validated['entitled'],
+            'carried_over' => $validated['carried_over'] ?? 0,
+            'used' => $validated['used'] ?? 0,
+        ]);
+
+        AuditLog::log('leave_balance.created', $balance);
+
+        return $this->ajaxSuccess('Leave balance created successfully.');
+    }
+
+    public function balancesUpdate(Request $request, LeaveBalance $balance)
+    {
+        $validated = $request->validate([
+            'entitled' => 'required|numeric|min:0',
+            'carried_over' => 'nullable|numeric|min:0',
+            'used' => 'nullable|numeric|min:0',
+        ]);
+
+        $old = $balance->toArray();
+        $balance->update([
+            'entitled' => $validated['entitled'],
+            'carried_over' => $validated['carried_over'] ?? 0,
+            'used' => $validated['used'] ?? 0,
+        ]);
+        AuditLog::log('leave_balance.updated', $balance, $old, $validated);
+
+        return $this->ajaxSuccess('Leave balance updated successfully.');
+    }
+
+    public function balancesDestroy(LeaveBalance $balance)
+    {
+        $old = $balance->toArray();
+        $balance->delete();
+        AuditLog::log('leave_balance.deleted', null, $old);
+        return $this->ajaxSuccess('Leave balance deleted successfully.');
     }
 
     public function employeeHistory(Request $request, Employee $employee)
