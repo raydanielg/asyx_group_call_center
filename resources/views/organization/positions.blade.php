@@ -23,38 +23,29 @@
                 <tr class="text-left text-xs text-gray-500 bg-gray-50/50">
                     <th class="px-5 py-3 font-medium">Title</th>
                     <th class="px-5 py-3 font-medium">Department</th>
-                    <th class="px-5 py-3 font-medium">Code</th>
-                    <th class="px-5 py-3 font-medium">Level</th>
+                    <th class="px-5 py-3 font-medium">Grade</th>
                     <th class="px-5 py-3 font-medium">Status</th>
-                    <th class="px-5 py-3 font-medium text-right">Actions</th>
+                    <th class="px-5 py-3 font-medium"></th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($positions as $pos)
-                <tr class="border-t border-gray-100 hover:bg-gray-50/50 transition-colors" id="row-pos-{{ $pos->id }}">
+                <tr class="border-t border-gray-100 hover:bg-gray-50/50 transition-colors">
                     <td class="px-5 py-3 font-medium text-gray-900">{{ $pos->title ?? $pos->name ?? 'N/A' }}</td>
                     <td class="px-5 py-3 text-gray-500">{{ $pos->department?->name ?? 'N/A' }}</td>
-                    <td class="px-5 py-3"><span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-gray-50 text-gray-600 border border-gray-100">{{ $pos->code ?? 'N/A' }}</span></td>
-                    <td class="px-5 py-3"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-navy-50 text-navy-700 border border-navy-100 capitalize">{{ str_replace('_', ' ', $pos->level ?? 'N/A') }}</span></td>
+                    <td class="px-5 py-3 text-gray-500">{{ $pos->grade ?? 'N/A' }}</td>
                     <td class="px-5 py-3">
                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium {{ $pos->is_active ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-gray-50 text-gray-500 border border-gray-100' }}">{{ $pos->is_active ? 'Active' : 'Inactive' }}</span>
                     </td>
-                    <td class="px-5 py-3">
-                        <div class="flex items-center justify-end gap-1">
-                            <button type="button" onclick="openEditPos({{ $pos->id }})" class="p-1.5 rounded-lg text-navy-600 hover:bg-navy-50 hover:text-navy-700 transition-colors" title="Edit">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            </button>
-                            <form method="POST" action="{{ route('organization.positions.destroy', $pos) }}" class="inline" data-ajax data-confirm="Delete this position?" data-row-id="row-pos-{{ $pos->id }}">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors" title="Delete">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </form>
-                        </div>
+                    <td class="px-5 py-3 text-right">
+                        <form method="POST" action="{{ route('organization.positions.destroy', $pos) }}" class="inline" data-ajax data-confirm="Delete this position?">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="text-xs text-red-500 hover:text-red-600 font-medium">Delete</button>
+                        </form>
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="7" class="px-5 py-10 text-center text-gray-400"><p class="text-sm">No positions yet</p></td></tr>
+                <tr><td colspan="5" class="px-5 py-10 text-center text-gray-400"><p class="text-sm">No positions yet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -68,27 +59,15 @@
         <h3 class="text-sm font-semibold text-gray-900 mb-4">Add Position</h3>
         <form method="POST" action="{{ route('organization.positions.store') }}" class="space-y-3" data-ajax data-close-modal="modal-pos" data-reset-on-success="true">
             @csrf
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Title <span class="text-red-500">*</span></label><input type="text" name="title" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Code <span class="text-red-500">*</span></label><input type="text" name="code" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Department <span class="text-red-500">*</span></label>
-                <select name="department_id" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100">
+            <div><label class="block text-xs font-medium text-gray-600 mb-1">Title <span class="text-red-500">*</span></label><input type="text" name="title" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></div>
+            <div><label class="block text-xs font-medium text-gray-600 mb-1">Department</label>
+                <select name="department_id" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300">
                     <option value="">Select...</option>
                     @foreach($departments as $d)<option value="{{ $d->id }}">{{ $d->name }}</option>@endforeach
                 </select>
             </div>
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Level <span class="text-red-500">*</span></label>
-                <select name="level" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100">
-                    <option value="agent">Agent</option>
-                    <option value="senior_agent">Senior Agent</option>
-                    <option value="team_lead">Team Lead</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="manager">Manager</option>
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div><label class="block text-xs font-medium text-gray-600 mb-1">Min Salary</label><input type="number" step="0.01" name="min_salary" min="0" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-                <div><label class="block text-xs font-medium text-gray-600 mb-1">Max Salary</label><input type="number" step="0.01" name="max_salary" min="0" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-            </div>
+            <div><label class="block text-xs font-medium text-gray-600 mb-1">Grade</label><input type="text" name="grade" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></div>
+            <div><label class="block text-xs font-medium text-gray-600 mb-1">Description</label><textarea name="description" rows="2" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300"></textarea></div>
             <div class="flex gap-2 pt-2">
                 <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700">Add</button>
                 <button type="button" onclick="closeModal('modal-pos')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
@@ -96,74 +75,5 @@
         </form>
     </div>
 </div>
-
-{-- Edit Modal --}}
-<div id="modal-pos-edit" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onclick="closeModal('modal-pos-edit')"></div>
-    <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl mx-4">
-        <div class="flex items-center gap-3 p-5 border-b border-gray-100">
-            <div class="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-navy-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            </div>
-            <h3 class="text-sm font-bold text-gray-900">Edit Position</h3>
-            <button type="button" onclick="closeModal('modal-pos-edit')" class="ml-auto p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-        </div>
-        <form id="form-pos-edit" method="POST" class="p-5 space-y-3" data-ajax data-close-modal="modal-pos-edit">
-            @csrf @method('PUT')
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Title <span class="text-red-500">*</span></label><input type="text" name="title" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Code <span class="text-red-500">*</span></label><input type="text" name="code" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Department <span class="text-red-500">*</span></label>
-                <select name="department_id" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100">
-                    <option value="">Select...</option>
-                    @foreach($departments as $d)<option value="{{ $d->id }}">{{ $d->name }}</option>@endforeach
-                </select>
-            </div>
-            <div><label class="block text-xs font-medium text-gray-600 mb-1">Level <span class="text-red-500">*</span></label>
-                <select name="level" required class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100">
-                    <option value="agent">Agent</option>
-                    <option value="senior_agent">Senior Agent</option>
-                    <option value="team_lead">Team Lead</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="manager">Manager</option>
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div><label class="block text-xs font-medium text-gray-600 mb-1">Min Salary</label><input type="number" step="0.01" name="min_salary" min="0" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-                <div><label class="block text-xs font-medium text-gray-600 mb-1">Max Salary</label><input type="number" step="0.01" name="max_salary" min="0" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100"></div>
-            </div>
-            <label class="flex items-center gap-2 text-xs text-gray-600 cursor-pointer"><input type="checkbox" name="is_active" value="1" checked class="rounded border-gray-300 text-navy-600 focus:ring-navy-300"> Active</label>
-            <div class="flex gap-2 pt-2">
-                <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors">Save Changes</button>
-                <button type="button" onclick="closeModal('modal-pos-edit')" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-@push('scripts')
-@php($posData = $positions->map(fn($p) => ['id' => $p->id, 'title' => $p->title, 'code' => $p->code, 'department_id' => $p->department_id, 'level' => $p->level, 'min_salary' => (string)($p->min_salary ?? ''), 'max_salary' => (string)($p->max_salary ?? ''), 'is_active' => $p->is_active])->values())
-<script>
-(function() {
-    const data = @json($posData);
-    const editForm = document.getElementById('form-pos-edit');
-
-    window.openEditPos = function(id) {
-        const p = data.find(x => x.id == id);
-        if (!p) return;
-        editForm.action = '{{ route("organization.positions.update", "__ID__") }}'.replace('__ID__', id);
-        editForm.querySelector('[name="title"]').value = p.title || '';
-        editForm.querySelector('[name="code"]').value = p.code || '';
-        editForm.querySelector('[name="department_id"]').value = p.department_id || '';
-        editForm.querySelector('[name="level"]').value = p.level || 'agent';
-        editForm.querySelector('[name="min_salary"]').value = p.min_salary;
-        editForm.querySelector('[name="max_salary"]').value = p.max_salary;
-        editForm.querySelector('[name="is_active"]').checked = !!p.is_active;
-        openModal('modal-pos-edit');
-    };
-})();
-</script>
-@endendpush
 
 @endsection
