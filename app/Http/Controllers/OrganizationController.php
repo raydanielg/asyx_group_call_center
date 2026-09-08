@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Models\WorkingHourPolicy;
 use App\Models\Holiday;
 use App\Models\CompanyPolicy;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
@@ -37,7 +38,8 @@ class OrganizationController extends Controller
             'phone' => 'nullable|string|max:30',
             'timezone' => 'nullable|string|max:64',
         ]);
-        Branch::create($validated);
+        $branch = Branch::create($validated);
+        AuditLog::log('branch.created', $branch);
         return $this->ajaxSuccess('Branch created successfully.');
     }
 
@@ -52,13 +54,17 @@ class OrganizationController extends Controller
             'timezone' => 'nullable|string|max:64',
             'is_active' => 'boolean',
         ]);
+        $old = $branch->toArray();
         $branch->update($validated);
+        AuditLog::log('branch.updated', $branch, $old, $validated);
         return $this->ajaxSuccess('Branch updated successfully.');
     }
 
     public function branchesDestroy(Branch $branch)
     {
+        $old = $branch->toArray();
         $branch->delete();
+        AuditLog::log('branch.deleted', null, $old);
         return $this->ajaxSuccess('Branch deleted successfully.');
     }
 
@@ -79,7 +85,8 @@ class OrganizationController extends Controller
             'branch_id' => 'nullable|exists:branches,id',
             'parent_id' => 'nullable|exists:departments,id',
         ]);
-        Department::create($validated);
+        $dept = Department::create($validated);
+        AuditLog::log('department.created', $dept);
         return $this->ajaxSuccess('Department created successfully.');
     }
 
@@ -92,13 +99,17 @@ class OrganizationController extends Controller
             'parent_id' => 'nullable|exists:departments,id',
             'is_active' => 'boolean',
         ]);
+        $old = $department->toArray();
         $department->update($validated);
+        AuditLog::log('department.updated', $department, $old, $validated);
         return $this->ajaxSuccess('Department updated successfully.');
     }
 
     public function departmentsDestroy(Department $department)
     {
+        $old = $department->toArray();
         $department->delete();
+        AuditLog::log('department.deleted', null, $old);
         return $this->ajaxSuccess('Department deleted successfully.');
     }
 
@@ -120,7 +131,8 @@ class OrganizationController extends Controller
             'min_salary' => 'nullable|numeric|min:0',
             'max_salary' => 'nullable|numeric|min:0',
         ]);
-        Position::create($validated);
+        $pos = Position::create($validated);
+        AuditLog::log('position.created', $pos);
         return $this->ajaxSuccess('Position created successfully.');
     }
 
@@ -135,13 +147,17 @@ class OrganizationController extends Controller
             'max_salary' => 'nullable|numeric|min:0',
             'is_active' => 'boolean',
         ]);
+        $old = $position->toArray();
         $position->update($validated);
+        AuditLog::log('position.updated', $position, $old, $validated);
         return $this->ajaxSuccess('Position updated successfully.');
     }
 
     public function positionsDestroy(Position $position)
     {
+        $old = $position->toArray();
         $position->delete();
+        AuditLog::log('position.deleted', null, $old);
         return $this->ajaxSuccess('Position deleted successfully.');
     }
 
@@ -159,7 +175,8 @@ class OrganizationController extends Controller
             'name' => 'required|string|max:100',
             'department_id' => 'required|exists:departments,id',
         ]);
-        Team::create($validated);
+        $team = Team::create($validated);
+        AuditLog::log('team.created', $team);
         return $this->ajaxSuccess('Team created successfully.');
     }
 
@@ -170,13 +187,17 @@ class OrganizationController extends Controller
             'department_id' => 'required|exists:departments,id',
             'is_active' => 'boolean',
         ]);
+        $old = $team->toArray();
         $team->update($validated);
+        AuditLog::log('team.updated', $team, $old, $validated);
         return $this->ajaxSuccess('Team updated successfully.');
     }
 
     public function teamsDestroy(Team $team)
     {
+        $old = $team->toArray();
         $team->delete();
+        AuditLog::log('team.deleted', null, $old);
         return $this->ajaxSuccess('Team deleted successfully.');
     }
 
