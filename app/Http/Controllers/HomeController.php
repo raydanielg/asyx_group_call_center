@@ -87,6 +87,7 @@ class HomeController extends Controller
             ->where('probation_end_date', '<=', now()->addDays(30)->toDateString())
             ->count();
         $unapprovedOvertime = AttendanceRecord::where('overtime_minutes', '>', 0)->where('overtime_approved', false)->count();
+        $overdueCoaching = 0;
         // Performance sparkline (avg score per month)
         $perfMonths = [];
         $perfLabels = [];
