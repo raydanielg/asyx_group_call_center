@@ -118,9 +118,10 @@
 </div>
 
 @push('scripts')
+@php($branchData = $branches->map(fn($b) => ['id' => $b->id, 'name' => $b->name, 'code' => $b->code, 'address' => $b->address, 'city' => $b->city, 'phone' => $b->phone, 'timezone' => $b->timezone, 'is_active' => $b->is_active])->values())
 <script>
 (function() {
-    const data = @json($branches->map(fn($b) => ['id' => $b->id, 'name' => $b->name, 'code' => $b->code, 'address' => $b->address, 'city' => $b->city, 'phone' => $b->phone, 'timezone' => $b->timezone, 'is_active' => $b->is_active]));
+    const data = @json($branchData);
     const editForm = document.getElementById('form-branch-edit');
 
     window.openEditBranch = function(id) {
