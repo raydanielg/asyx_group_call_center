@@ -33,8 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/employees/{employee}/emergency-contacts', [App\Http\Controllers\EmployeeController::class, 'storeEmergencyContact'])->name('employees.emergency-contacts.store');
     Route::get('/employees-documents/expiry', [App\Http\Controllers\EmployeeController::class, 'documentsExpiry'])->name('employees.documents-expiry');
 
-    // Organization
-    Route::prefix('organization')->group(function () {
+    // Organization (admin/owner only)
+    Route::prefix('organization')->middleware('role:admin,owner')->group(function () {
         Route::get('/branches', [App\Http\Controllers\OrganizationController::class, 'branchesIndex'])->name('organization.branches');
         Route::post('/branches', [App\Http\Controllers\OrganizationController::class, 'branchesStore'])->name('organization.branches.store');
         Route::put('/branches/{branch}', [App\Http\Controllers\OrganizationController::class, 'branchesUpdate'])->name('organization.branches.update');
@@ -110,8 +110,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/leave/balances/{balance}', [App\Http\Controllers\LeaveController::class, 'balancesDestroy'])->name('leave.balances.destroy');
     Route::get('/leave/employee/{employee}/history', [App\Http\Controllers\LeaveController::class, 'employeeHistory'])->name('leave.employee.history');
 
-    // Payroll
-    Route::get('/payroll/components', [App\Http\Controllers\PayrollController::class, 'componentsIndex'])->name('payroll.components');
+    // Payroll (admin/owner only)
+    Route::middleware('role:admin,owner')->group(function () {
+        Route::get('/payroll/components', [App\Http\Controllers\PayrollController::class, 'componentsIndex'])->name('payroll.components');
     Route::post('/payroll/components', [App\Http\Controllers\PayrollController::class, 'componentsStore'])->name('payroll.components.store');
     Route::put('/payroll/components/{component}', [App\Http\Controllers\PayrollController::class, 'componentsUpdate'])->name('payroll.components.update');
     Route::delete('/payroll/components/{component}', [App\Http\Controllers\PayrollController::class, 'componentsDestroy'])->name('payroll.components.destroy');
@@ -128,6 +129,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/payroll/commissions', [App\Http\Controllers\PayrollController::class, 'commissionsIndex'])->name('payroll.commissions');
     Route::post('/payroll/commissions', [App\Http\Controllers\PayrollController::class, 'commissionsStore'])->name('payroll.commissions.store');
     Route::delete('/payroll/commissions/{commission}', [App\Http\Controllers\PayrollController::class, 'commissionsDestroy'])->name('payroll.commissions.destroy');
+    });
 
     // Recruitment
     Route::get('/recruitment/jobs', [App\Http\Controllers\RecruitmentController::class, 'jobsIndex'])->name('recruitment.jobs');
@@ -174,5 +176,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/performance', [App\Http\Controllers\ReportController::class, 'performance'])->name('reports.performance');
     Route::get('/reports/call-center', [App\Http\Controllers\ReportController::class, 'callCenter'])->name('reports.call-center');
     Route::get('/reports/audit', [App\Http\Controllers\ReportController::class, 'audit'])->name('reports.audit');
+
+    // Report Exports (PDF + Excel)
+    Route::get('/reports/employees/export/{format}', [App\Http\Controllers\ReportController::class, 'exportEmployees'])->name('reports.employees.export');
+    Route::get('/reports/attendance/export/{format}', [App\Http\Controllers\ReportController::class, 'exportAttendance'])->name('reports.attendance.export');
+    Route::get('/reports/payroll/export/{format}', [App\Http\Controllers\ReportController::class, 'exportPayroll'])->name('reports.payroll.export');
+    Route::get('/reports/recruitment/export/{format}', [App\Http\Controllers\ReportController::class, 'exportRecruitment'])->name('reports.recruitment.export');
+    Route::get('/reports/performance/export/{format}', [App\Http\Controllers\ReportController::class, 'exportPerformance'])->name('reports.performance.export');
+    Route::get('/reports/call-center/export/{format}', [App\Http\Controllers\ReportController::class, 'exportCallCenter'])->name('reports.call-center.export');
+    Route::get('/reports/audit/export/{format}', [App\Http\Controllers\ReportController::class, 'exportAudit'])->name('reports.audit.export');
+    Route::get('/reports/audit-report/download/{format}', [App\Http\Controllers\ReportController::class, 'downloadAuditReport'])->name('reports.audit-report.download');
+    Route::get('/reports/guide/download', [App\Http\Controllers\ReportController::class, 'downloadGuide'])->name('reports.guide.download');
+    Route::get('/reports/system-overview', [App\Http\Controllers\ReportController::class, 'systemOverview'])->name('reports.system-overview');
 });
 

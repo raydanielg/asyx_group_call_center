@@ -46,9 +46,16 @@
         .swal2-title { font-size: 14px !important; font-weight: 700 !important; padding: 0 !important; }
         .swal2-html-container { font-size: 12px !important; margin: 0 !important; }
         .swal2-confirm { border-radius: 8px !important; font-weight: 700 !important; font-size: 12px !important; padding: 6px 16px !important; }
+        *:focus-visible { outline: 2px solid #A56035; outline-offset: 2px; border-radius: 4px; }
+        .skip-link { position: absolute; top: -40px; left: 0; background: #0D3E63; color: #fff; padding: 8px 16px; z-index: 100; border-radius: 0 0 8px 0; text-decoration: none; font-size: 13px; transition: top 0.2s; }
+        .skip-link:focus { top: 0; }
+        #cookieConsent { position: fixed; bottom: 0; left: 0; right: 0; background: #041a2f; color: #d4e3f0; padding: 12px 24px; z-index: 60; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); }
+        @media (max-width: 640px) { #cookieConsent { flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body class="font-['Nunito',sans-serif] antialiased bg-[#F8F9FB] text-[#1A2332]">
+
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
 
     {{-- Mobile Overlay --}}
     <div id="mobileOverlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
@@ -85,9 +92,9 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-emp" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-emp" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('employees*') ? 'open' : '' }}">
-                    <a href="{{ route('employees.index') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">All Employees</a>
-                    <a href="{{ route('employees.create') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Add Employee</a>
-                    <a href="{{ route('employees.documents-expiry') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Doc Expiry</a>
+                    <a href="{{ route('employees.index') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">All Employees</a>
+                    <a href="{{ route('employees.create') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Add Employee</a>
+                    <a href="{{ route('employees.documents-expiry') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Doc Expiry</a>
                 </div>
             </div>
 
@@ -99,13 +106,13 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-org" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-org" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('organization*') ? 'open' : '' }}">
-                    <a href="{{ route('organization.branches') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Branches</a>
-                    <a href="{{ route('organization.departments') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Departments</a>
-                    <a href="{{ route('organization.positions') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Positions</a>
-                    <a href="{{ route('organization.teams') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Teams</a>
-                    <a href="{{ route('organization.working-hours') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Working Hours</a>
-                    <a href="{{ route('organization.holidays') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Holidays</a>
-                    <a href="{{ route('organization.policies') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Policies</a>
+                    <a href="{{ route('organization.branches') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Branches</a>
+                    <a href="{{ route('organization.departments') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Departments</a>
+                    <a href="{{ route('organization.positions') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Positions</a>
+                    <a href="{{ route('organization.teams') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Teams</a>
+                    <a href="{{ route('organization.working-hours') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Working Hours</a>
+                    <a href="{{ route('organization.holidays') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Holidays</a>
+                    <a href="{{ route('organization.policies') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Policies</a>
                 </div>
             </div>
 
@@ -117,10 +124,10 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-att" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-att" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('attendance*') ? 'open' : '' }}">
-                    <a href="{{ route('attendance.index') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Daily Grid</a>
-                    <a href="{{ route('attendance.missing') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Missing</a>
-                    <a href="{{ route('attendance.corrections') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Corrections</a>
-                    <a href="{{ route('attendance.summary') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Summary</a>
+                    <a href="{{ route('attendance.index') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Daily Grid</a>
+                    <a href="{{ route('attendance.missing') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Missing</a>
+                    <a href="{{ route('attendance.corrections') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Corrections</a>
+                    <a href="{{ route('attendance.summary') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Summary</a>
                 </div>
             </div>
 
@@ -132,9 +139,9 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-shift" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-shift" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('shifts*') ? 'open' : '' }}">
-                    <a href="{{ route('shifts.index') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Catalog</a>
-                    <a href="{{ route('shifts.planner') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Planner</a>
-                    <a href="{{ route('shifts.rotations') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Rotations</a>
+                    <a href="{{ route('shifts.index') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Catalog</a>
+                    <a href="{{ route('shifts.planner') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Planner</a>
+                    <a href="{{ route('shifts.rotations') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Rotations</a>
                 </div>
             </div>
 
@@ -146,9 +153,9 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-leave" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-leave" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('leave*') ? 'open' : '' }}">
-                    <a href="{{ route('leave.types') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Leave Types</a>
-                    <a href="{{ route('leave.requests') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Requests</a>
-                    <a href="{{ route('leave.balances') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Balances</a>
+                    <a href="{{ route('leave.types') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Leave Types</a>
+                    <a href="{{ route('leave.requests') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Requests</a>
+                    <a href="{{ route('leave.balances') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Balances</a>
                 </div>
             </div>
 
@@ -160,10 +167,10 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-pay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-pay" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('payroll*') ? 'open' : '' }}">
-                    <a href="{{ route('payroll.components') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Components</a>
-                    <a href="{{ route('payroll.runs') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Payroll Runs</a>
-                    <a href="{{ route('payroll.bonuses') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Bonuses</a>
-                    <a href="{{ route('payroll.commissions') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Commissions</a>
+                    <a href="{{ route('payroll.components') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Components</a>
+                    <a href="{{ route('payroll.runs') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Payroll Runs</a>
+                    <a href="{{ route('payroll.bonuses') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Bonuses</a>
+                    <a href="{{ route('payroll.commissions') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Commissions</a>
                 </div>
             </div>
 
@@ -175,10 +182,10 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-rec" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-rec" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('recruitment*') ? 'open' : '' }}">
-                    <a href="{{ route('recruitment.jobs') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Job Positions</a>
-                    <a href="{{ route('recruitment.applicants') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Applicants</a>
-                    <a href="{{ route('recruitment.interviews') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Interviews</a>
-                    <a href="{{ route('recruitment.onboarding') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Onboarding</a>
+                    <a href="{{ route('recruitment.jobs') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Job Positions</a>
+                    <a href="{{ route('recruitment.applicants') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Applicants</a>
+                    <a href="{{ route('recruitment.interviews') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Interviews</a>
+                    <a href="{{ route('recruitment.onboarding') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Onboarding</a>
                 </div>
             </div>
 
@@ -190,10 +197,10 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-perf" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-perf" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('performance*') ? 'open' : '' }}">
-                    <a href="{{ route('performance.kpis') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">KPIs</a>
-                    <a href="{{ route('performance.targets') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Targets</a>
-                    <a href="{{ route('performance.evaluations') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Evaluations</a>
-                    <a href="{{ route('performance.leaderboard') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Leaderboard</a>
+                    <a href="{{ route('performance.kpis') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">KPIs</a>
+                    <a href="{{ route('performance.targets') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Targets</a>
+                    <a href="{{ route('performance.evaluations') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Evaluations</a>
+                    <a href="{{ route('performance.leaderboard') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Leaderboard</a>
                 </div>
             </div>
 
@@ -205,8 +212,8 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-ana" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-ana" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('analytics*') ? 'open' : '' }}">
-                    <a href="{{ route('analytics.overview') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Overview</a>
-                    <a href="{{ route('analytics.data-entry') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Data Entry</a>
+                    <a href="{{ route('analytics.overview') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Overview</a>
+                    <a href="{{ route('analytics.data-entry') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Data Entry</a>
                 </div>
             </div>
 
@@ -218,13 +225,13 @@
                     <svg class="w-4 h-4 ml-auto transition-transform" id="arrow-rep" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
                 <div id="menu-rep" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('reports*') ? 'open' : '' }}">
-                    <a href="{{ route('reports.employees') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Employees</a>
-                    <a href="{{ route('reports.attendance') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Attendance</a>
-                    <a href="{{ route('reports.payroll') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Payroll</a>
-                    <a href="{{ route('reports.recruitment') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Recruitment</a>
-                    <a href="{{ route('reports.performance') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Performance</a>
-                    <a href="{{ route('reports.call-center') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Call Center</a>
-                    <a href="{{ route('reports.audit') }}" class="block py-1.5 text-xs text-navy-200/70 hover:text-white">Audit Log</a>
+                    <a href="{{ route('reports.employees') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Employees</a>
+                    <a href="{{ route('reports.attendance') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Attendance</a>
+                    <a href="{{ route('reports.payroll') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Payroll</a>
+                    <a href="{{ route('reports.recruitment') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Recruitment</a>
+                    <a href="{{ route('reports.performance') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Performance</a>
+                    <a href="{{ route('reports.call-center') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Call Center</a>
+                    <a href="{{ route('reports.audit') }}" class="block py-1.5 text-xs text-navy-100/80 hover:text-white">Audit Log</a>
                 </div>
             </div>
 
@@ -240,8 +247,8 @@
                     <p class="text-sm font-semibold text-white truncate">{{ Auth::user()->first_name ? Auth::user()->first_name . ' ' . Auth::user()->last_name : (Auth::user()->name ?? 'User') }}</p>
                     <p class="text-xs text-navy-300/60">{{ ucfirst(Auth::user()->role ?? 'Agent') }}</p>
                 </div>
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('dash-logout').submit();" class="text-navy-300/60 hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('dash-logout').submit();" class="text-navy-300/60 hover:text-white transition-colors" aria-label="Logout">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 </a>
                 <form id="dash-logout" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
             </div>
@@ -254,8 +261,8 @@
         {{-- Header --}}
         <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-30">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600" aria-label="Toggle sidebar menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <h1 class="text-lg font-bold text-gray-800">@yield('page_title', 'Dashboard')</h1>
             </div>
@@ -267,19 +274,27 @@
                 </div>
 
                 {{-- Notifications --}}
-                <button class="relative p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                <button class="relative p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors" aria-label="Notifications">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true"></span>
                 </button>
             </div>
         </header>
 
         {{-- Page Content --}}
-        <main class="flex-1 p-6 animate-fade">
+        <main id="main-content" class="flex-1 p-6 animate-fade">
             @yield('content')
         </main>
 
     </div>
+
+    {{-- Cookie Consent Banner --}}
+    @if(!cookie('cookie_consent'))
+    <div id="cookieConsent" role="region" aria-label="Cookie consent">
+        <p class="text-xs" style="max-width:600px">We use essential cookies to operate this system. No tracking or third-party cookies are used. By continuing to use this system, you consent to our use of cookies.</p>
+        <button onclick="document.getElementById('cookieConsent').style.display='none'; document.cookie='cookie_consent=1; max-age=31536000; path=/; samesite=lax'" class="px-4 py-2 text-xs font-semibold bg-copper-500 text-white rounded-lg hover:bg-copper-600 whitespace-nowrap">Accept</button>
+    </div>
+    @endif
 
     {{-- SweetAlert2 Alert System --}}
     <script>
