@@ -113,9 +113,10 @@
 </div>
 
 @push('scripts')
+@php($teamData = $teams->map(fn($t) => ['id' => $t->id, 'name' => $t->name, 'department_id' => $t->department_id, 'is_active' => $t->is_active])->values())
 <script>
 (function() {
-    const data = @json($teams->map(fn($t) => ['id' => $t->id, 'name' => $t->name, 'department_id' => $t->department_id, 'is_active' => $t->is_active]));
+    const data = @json($teamData);
     const editForm = document.getElementById('form-team-edit');
 
     window.openEditTeam = function(id) {

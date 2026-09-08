@@ -129,9 +129,10 @@
 </div>
 
 @push('scripts')
+@php($deptData = $departments->map(fn($d) => ['id' => $d->id, 'name' => $d->name, 'code' => $d->code, 'branch_id' => $d->branch_id, 'parent_id' => $d->parent_id, 'is_active' => $d->is_active])->values())
 <script>
 (function() {
-    const data = @json($departments->map(fn($d) => ['id' => $d->id, 'name' => $d->name, 'code' => $d->code, 'branch_id' => $d->branch_id, 'parent_id' => $d->parent_id, 'is_active' => $d->is_active]));
+    const data = @json($deptData);
     const editForm = document.getElementById('form-dept-edit');
 
     window.openEditDept = function(id) {

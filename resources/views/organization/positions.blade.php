@@ -143,9 +143,10 @@
 </div>
 
 @push('scripts')
+@php($posData = $positions->map(fn($p) => ['id' => $p->id, 'title' => $p->title, 'code' => $p->code, 'department_id' => $p->department_id, 'level' => $p->level, 'min_salary' => (string)($p->min_salary ?? ''), 'max_salary' => (string)($p->max_salary ?? ''), 'is_active' => $p->is_active])->values())
 <script>
 (function() {
-    const data = @json($positions->map(fn($p) => ['id' => $p->id, 'title' => $p->title, 'code' => $p->code, 'department_id' => $p->department_id, 'level' => $p->level, 'min_salary' => (string)($p->min_salary ?? ''), 'max_salary' => (string)($p->max_salary ?? ''), 'is_active' => $p->is_active]));
+    const data = @json($posData);
     const editForm = document.getElementById('form-pos-edit');
 
     window.openEditPos = function(id) {
