@@ -35,7 +35,30 @@ class AttendanceController extends Controller
 
         $records = AttendanceRecord::where('date', $date)->get()->keyBy('employee_id');
 
-        return view('attendance.index', compact('employees', 'departments', 'date', 'records'));
+        $stats = [
+            'total' => $employees->count(),
+            'present' => 0,
+            'late' => 0,
+            'absent' => 0,
+            'half_day' => 0,
+            'on_leave' => 0,
+            'off' => 0,
+            'missing' => 0,
+            'ot_minutes' => 0,
+        ];
+        foreach ($employees as $emp) {
+            $rec = $records->get($emp->id);
+            if (!$rec) {
+                $stats['missing']++;
+            } elseif (isset($stats[$rec->status])) {
+                $stats[$rec->status]++;
+            }
+            if ($rec && $rec->overtime_minutes > 0) {
+                $stats['ot_minutes'] += $rec->overtime_minutes;
+            }
+        }
+
+        return view('attendance.index', compact('employees', 'departments', 'date', 'records', 'stats'));
     }
 
     public function store(Request $request)
