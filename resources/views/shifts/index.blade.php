@@ -132,7 +132,20 @@
             </div>
             <div>
                 <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5 block">Color</label>
-                <input type="text" name="color" placeholder="#0D3E63" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all font-mono">
+                <div class="flex items-center gap-2">
+                    <input type="color" name="color_picker" value="#0D3E63" class="w-10 h-10 rounded-xl border border-gray-200 cursor-pointer p-1 bg-white" onchange="syncColorInput(this, 'color_create')">
+                    <input type="text" name="color" id="color_create" value="#0D3E63" class="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all font-mono">
+                </div>
+                <div class="flex items-center gap-1.5 mt-2">
+                    <button type="button" onclick="setCreateColor('#0D3E63')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#0D3E63" title="Navy"></button>
+                    <button type="button" onclick="setCreateColor('#A56035')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#A56035" title="Copper"></button>
+                    <button type="button" onclick="setCreateColor('#10B981')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#10B981" title="Green"></button>
+                    <button type="button" onclick="setCreateColor('#F59E0B')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#F59E0B" title="Amber"></button>
+                    <button type="button" onclick="setCreateColor('#EF4444')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#EF4444" title="Red"></button>
+                    <button type="button" onclick="setCreateColor('#6366F1')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#6366F1" title="Indigo"></button>
+                    <button type="button" onclick="setCreateColor('#8B5CF6')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#8B5CF6" title="Purple"></button>
+                    <button type="button" onclick="setCreateColor('#EC4899')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#EC4899" title="Pink"></button>
+                </div>
             </div>
             <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" name="is_night_shift" value="1" class="w-4 h-4 rounded border-gray-300 text-navy-600 focus:ring-navy-300">
@@ -178,7 +191,20 @@
             </div>
             <div>
                 <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5 block">Color</label>
-                <input type="text" name="color" placeholder="#0D3E63" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all font-mono">
+                <div class="flex items-center gap-2">
+                    <input type="color" name="color_picker" value="#0D3E63" class="w-10 h-10 rounded-xl border border-gray-200 cursor-pointer p-1 bg-white" onchange="syncColorInput(this, 'color_edit')">
+                    <input type="text" name="color" id="color_edit" placeholder="#0D3E63" class="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all font-mono">
+                </div>
+                <div class="flex items-center gap-1.5 mt-2">
+                    <button type="button" onclick="setEditColor('#0D3E63')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#0D3E63" title="Navy"></button>
+                    <button type="button" onclick="setEditColor('#A56035')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#A56035" title="Copper"></button>
+                    <button type="button" onclick="setEditColor('#10B981')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#10B981" title="Green"></button>
+                    <button type="button" onclick="setEditColor('#F59E0B')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#F59E0B" title="Amber"></button>
+                    <button type="button" onclick="setEditColor('#EF4444')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#EF4444" title="Red"></button>
+                    <button type="button" onclick="setEditColor('#6366F1')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#6366F1" title="Indigo"></button>
+                    <button type="button" onclick="setEditColor('#8B5CF6')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#8B5CF6" title="Purple"></button>
+                    <button type="button" onclick="setEditColor('#EC4899')" class="w-6 h-6 rounded-lg border border-gray-200" style="background:#EC4899" title="Pink"></button>
+                </div>
             </div>
             <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" name="is_night_shift" value="1" class="w-4 h-4 rounded border-gray-300 text-navy-600 focus:ring-navy-300">
@@ -255,10 +281,27 @@
         editForm.querySelector('[name="break_minutes"]').value = s.break_minutes ?? 60;
         editForm.querySelector('[name="grace_minutes"]').value = s.grace_minutes ?? 10;
         editForm.querySelector('[name="color"]').value = s.color ?? '';
+        editForm.querySelector('[name="color_picker"]').value = s.color ?? '#0D3E63';
         editForm.querySelector('[name="is_night_shift"]').checked = !!s.is_night_shift;
         editForm.querySelector('[name="is_active"]').checked = !!s.is_active;
 
         openDrawer();
+    };
+
+    // Color picker helpers
+    window.syncColorInput = function(picker, textId) {
+        const text = document.getElementById(textId);
+        if (text) text.value = picker.value;
+    };
+    window.setCreateColor = function(hex) {
+        const form = document.getElementById('form-shift-create');
+        form.querySelector('[name="color"]').value = hex;
+        form.querySelector('[name="color_picker"]').value = hex;
+    };
+    window.setEditColor = function(hex) {
+        const form = document.getElementById('form-shift-edit');
+        form.querySelector('[name="color"]').value = hex;
+        form.querySelector('[name="color_picker"]').value = hex;
     };
 })();
 </script>
