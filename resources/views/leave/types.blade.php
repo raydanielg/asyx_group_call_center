@@ -133,9 +133,22 @@
 @endsection
 
 @push('scripts')
+@php
+    $typesJson = $types->map(fn($t) => [
+        'id' => $t->id,
+        'name' => $t->name,
+        'code' => $t->code,
+        'days_per_year' => (string) $t->days_per_year,
+        'is_paid' => (bool) $t->is_paid,
+        'carry_forward' => (bool) $t->carry_forward,
+        'requires_attachment' => (bool) $t->requires_attachment,
+        'gender_restriction' => $t->gender_restriction,
+        'is_active' => (bool) $t->is_active,
+    ])->toJson();
+@endphp
 <script>
 (function() {
-    const typesData = @json($types->map(fn($t) => ['id' => $t->id, 'name' => $t->name, 'code' => $t->code, 'days_per_year' => (string)$t->days_per_year, 'is_paid' => $t->is_paid, 'carry_forward' => $t->carry_forward, 'requires_attachment' => $t->requires_attachment, 'gender_restriction' => $t->gender_restriction, 'is_active' => $t->is_active]));
+    const typesData = {!! $typesJson !!};
     const editForm = document.getElementById('form-lt-edit');
     const createForm = document.getElementById('form-lt-create');
     const modalTitle = document.getElementById('modal-lt-title');
