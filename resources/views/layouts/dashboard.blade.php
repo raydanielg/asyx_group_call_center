@@ -550,6 +550,7 @@
                                     if (modal) modal.classList.add('hidden');
                                 }
                                 if (form.dataset.resetOnSuccess === 'true') form.reset();
+                                form.dispatchEvent(new CustomEvent('ajax:success', { detail: data, bubbles: true }));
                             },
                             onError: () => {
                                 if (btn) { btn.disabled = false; btn.classList.remove('btn-loading'); }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
+    use AjaxResponseTrait;
     public function __construct()
     {
         $this->middleware('auth');
@@ -103,12 +104,12 @@ class AnalyticsController extends Controller
             $validated['aht_seconds'] = $answered > 0 ? (int)(($talkTime + $holdTime + $wrapTime) / $answered) : 0;
             $validated['source'] = 'manual';
 
-            AgentDailyStat::updateOrCreate(
+            $record = AgentDailyStat::updateOrCreate(
                 ['employee_id' => $validated['employee_id'], 'date' => $validated['date']],
                 $validated
             );
 
-            return back()->with('success', 'Stats saved.');
+            return $this->ajaxSuccess('Stats saved successfully.', null, ['stat' => $record->load('employee')]);
         }
 
         $employees = Employee::where('employment_status', 'active')->orderBy('first_name')->get();
