@@ -100,13 +100,31 @@ class AttendanceController extends Controller
     public function missing(Request $request)
     {
         $date = $request->get('date', now()->toDateString());
-        $presentIds = AttendanceRecord::where('date', $date)->pluck('employee_id');
-        $missing = Employee::with(['department', 'position'])
-            ->where('employment_status', 'active')
-            ->whereNotIn('id', $presentIds)
-            ->get();
+        $departmentId = $request->get('department_id');
 
-        return view('attendance.missing', compact('missing', 'date'));
+        $presentIds = AttendanceRecord::where('date', $date)->pluck('employee_id');
+
+        $query = Employee::with(['department', 'position', 'shiftAssignments' => function($q) use ($date) {
+            $q->where('date', $date)->with('shift');
+        }])
+            ->where('employment_status', 'active')
+            ->whereNotIn('id', $presentIds);
+
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
+        }
+
+        $missing = $query->orderBy('first_name')->get();
+        $departments = \App\Models\Department::where('is_active', true)->orderBy('name')->get();
+
+        $totalActive = Employee::where('employment_status', 'active');
+        if ($departmentId) {
+            $totalActive->where('department_id', $departmentId);
+        }
+        $totalActive = $totalActive->count();
+        $recorded = $totalActive - $missing->count();
+
+        return view('attendance.missing', compact('missing', 'date', 'departments', 'departmentId', 'totalActive', 'recorded'));
     }
 
     public function corrections()
