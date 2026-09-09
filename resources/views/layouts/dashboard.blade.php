@@ -675,68 +675,158 @@
     </script>
     @stack('modals')
 
-    {{-- Mark Attendance Modal --}}
-    <div id="markAttendanceModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="markAttendanceTitle">
+    {{-- Mark Attendance Drawer --}}
+    <div id="markAttendanceModal" class="hidden fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="markAttendanceTitle">
         <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeModal('markAttendanceModal')"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-            <div class="flex items-center justify-between mb-5">
-                <div>
-                    <h3 id="markAttendanceTitle" class="text-sm font-bold text-gray-900">Mark Attendance</h3>
-                    <p id="markAttendanceEmpName" class="text-xs text-gray-500 mt-0.5"></p>
+        <div class="absolute top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out translate-x-full" id="markAttendanceDrawer">
+            {{-- Header --}}
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-navy-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-navy-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    </div>
+                    <div>
+                        <h3 id="markAttendanceTitle" class="text-sm font-bold text-gray-900">Mark Attendance</h3>
+                        <p id="markAttendanceEmpName" class="text-xs text-gray-500 mt-0.5"></p>
+                    </div>
                 </div>
-                <button type="button" onclick="closeModal('markAttendanceModal')" class="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-colors" aria-label="Close modal">
+                <button type="button" onclick="closeModal('markAttendanceModal')" class="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-colors" aria-label="Close drawer">
                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            <form id="markAttendanceForm" action="{{ route('attendance.store') }}" method="POST" data-ajax data-close-modal="markAttendanceModal">
+
+            {{-- Body --}}
+            <form id="markAttendanceForm" action="{{ route('attendance.store') }}" method="POST" data-ajax data-close-modal="markAttendanceModal" class="flex-1 overflow-y-auto px-5 py-4">
                 @csrf
                 <input type="hidden" name="employee_id" id="markAttEmpId">
                 <input type="hidden" name="date" id="markAttDate">
-                <div class="grid grid-cols-2 gap-3 mb-4">
+
+                {{-- Status Pills --}}
+                <label class="text-[10px] font-medium text-gray-500 uppercase mb-2 block">Status</label>
+                <div class="grid grid-cols-3 gap-2 mb-5" id="statusPills">
+                    <button type="button" data-status="present" class="status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Present
+                    </button>
+                    <button type="button" data-status="late" class="status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Late
+                    </button>
+                    <button type="button" data-status="absent" class="status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        Absent
+                    </button>
+                    <button type="button" data-status="half_day" class="status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Half Day
+                    </button>
+                    <button type="button" data-status="on_leave" class="status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                        On Leave
+                    </button>
+                    <button type="button" data-status="off" class="status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        Off
+                    </button>
+                    <input type="hidden" name="status" id="markAttStatus" value="present">
+                </div>
+
+                {{-- Check In / Out --}}
+                <div class="grid grid-cols-2 gap-3 mb-5">
                     <div>
-                        <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Check In</label>
-                        <input type="time" name="check_in" id="markAttCheckIn" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
+                        <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5 block">Check In</label>
+                        <input type="time" name="check_in" id="markAttCheckIn" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
                     </div>
                     <div>
-                        <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Check Out</label>
-                        <input type="time" name="check_out" id="markAttCheckOut" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
+                        <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5 block">Check Out</label>
+                        <input type="time" name="check_out" id="markAttCheckOut" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
                     </div>
                 </div>
-                <div class="mb-4">
-                    <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Status</label>
-                    <select name="status" id="markAttStatus" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
-                        <option value="present">Present</option>
-                        <option value="late">Late</option>
-                        <option value="absent">Absent</option>
-                        <option value="half_day">Half Day</option>
-                        <option value="on_leave">On Leave</option>
-                        <option value="off">Off</option>
-                        <option value="holiday">Holiday</option>
-                    </select>
-                </div>
+
+                {{-- Quick Time Buttons --}}
                 <div class="mb-5">
-                    <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Remarks</label>
-                    <textarea name="remarks" id="markAttRemarks" rows="2" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all resize-none" placeholder="Optional notes..."></textarea>
+                    <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5 block">Quick Fill</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="document.getElementById('markAttCheckIn').value='08:00';document.getElementById('markAttCheckOut').value='17:00'" class="px-2.5 py-1 text-[10px] font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">8 AM - 5 PM</button>
+                        <button type="button" onclick="document.getElementById('markAttCheckIn').value='09:00';document.getElementById('markAttCheckOut').value='18:00'" class="px-2.5 py-1 text-[10px] font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">9 AM - 6 PM</button>
+                        <button type="button" onclick="document.getElementById('markAttCheckIn').value='14:00';document.getElementById('markAttCheckOut').value='22:00'" class="px-2.5 py-1 text-[10px] font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg transition-colors">2 PM - 10 PM</button>
+                        <button type="button" onclick="document.getElementById('markAttCheckIn').value='';document.getElementById('markAttCheckOut').value=''" class="px-2.5 py-1 text-[10px] font-medium text-gray-500 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">Clear</button>
+                    </div>
                 </div>
-                <div class="flex items-center justify-end gap-2">
-                    <button type="button" onclick="closeModal('markAttendanceModal')" class="px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-medium text-white bg-navy-600 hover:bg-navy-700 rounded-xl transition-colors">Save Attendance</button>
+
+                {{-- Remarks --}}
+                <div class="mb-4">
+                    <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5 block">Remarks</label>
+                    <textarea name="remarks" id="markAttRemarks" rows="3" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all resize-none" placeholder="Optional notes about this attendance..."></textarea>
                 </div>
             </form>
+
+            {{-- Footer --}}
+            <div class="px-5 py-4 border-t border-gray-100 flex items-center gap-2 bg-gray-50/30">
+                <button type="button" onclick="closeModal('markAttendanceModal')" class="flex-1 px-4 py-2.5 text-xs font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-xl border border-gray-200 transition-colors">Cancel</button>
+                <button type="submit" form="markAttendanceForm" class="flex-1 px-4 py-2.5 text-xs font-medium text-white bg-navy-600 hover:bg-navy-700 rounded-xl transition-colors">Save Attendance</button>
+            </div>
         </div>
     </div>
 
     <script>
-        window.openMarkAttendance = function(empId, empName, date, existingCheckIn, existingCheckOut, existingStatus, existingRemarks) {
-            document.getElementById('markAttEmpId').value = empId;
-            document.getElementById('markAttDate').value = date;
-            document.getElementById('markAttendanceEmpName').textContent = empName + ' · ' + date;
-            document.getElementById('markAttCheckIn').value = existingCheckIn || '';
-            document.getElementById('markAttCheckOut').value = existingCheckOut || '';
-            document.getElementById('markAttStatus').value = existingStatus || 'present';
-            document.getElementById('markAttRemarks').value = existingRemarks || '';
-            openModal('markAttendanceModal');
-        };
+        (function() {
+            const statusColors = {
+                present: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-300', active: 'bg-green-500 text-white border-green-500' },
+                late: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-300', active: 'bg-amber-500 text-white border-amber-500' },
+                absent: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-300', active: 'bg-red-500 text-white border-red-500' },
+                half_day: { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-300', active: 'bg-sky-500 text-white border-sky-500' },
+                on_leave: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-300', active: 'bg-purple-500 text-white border-purple-500' },
+                off: { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-300', active: 'bg-gray-500 text-white border-gray-500' },
+            };
+
+            function updatePillStyles(selected) {
+                document.querySelectorAll('.status-pill').forEach(pill => {
+                    const s = pill.dataset.status;
+                    const c = statusColors[s] || statusColors.off;
+                    if (s === selected) {
+                        pill.className = 'status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1 ' + c.active;
+                    } else {
+                        pill.className = 'status-pill px-2 py-2 rounded-xl text-[10px] font-medium border transition-all flex flex-col items-center gap-1 ' + c.bg + ' ' + c.text + ' ' + c.border;
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                const pill = e.target.closest('.status-pill');
+                if (pill) {
+                    const status = pill.dataset.status;
+                    document.getElementById('markAttStatus').value = status;
+                    updatePillStyles(status);
+                }
+            });
+
+            window.openMarkAttendance = function(empId, empName, date, existingCheckIn, existingCheckOut, existingStatus, existingRemarks) {
+                document.getElementById('markAttEmpId').value = empId;
+                document.getElementById('markAttDate').value = date;
+                document.getElementById('markAttendanceEmpName').textContent = empName + ' · ' + date;
+                document.getElementById('markAttCheckIn').value = existingCheckIn || '';
+                document.getElementById('markAttCheckOut').value = existingCheckOut || '';
+                document.getElementById('markAttStatus').value = existingStatus || 'present';
+                document.getElementById('markAttRemarks').value = existingRemarks || '';
+                updatePillStyles(existingStatus || 'present');
+                openModal('markAttendanceModal');
+                requestAnimationFrame(() => {
+                    document.getElementById('markAttendanceDrawer').classList.remove('translate-x-full');
+                });
+            };
+
+            const origClose = window.closeModal;
+            window.closeModal = function(id) {
+                if (id === 'markAttendanceModal') {
+                    const drawer = document.getElementById('markAttendanceDrawer');
+                    drawer.classList.add('translate-x-full');
+                    setTimeout(() => { document.getElementById(id).classList.add('hidden'); }, 300);
+                } else {
+                    origClose(id);
+                }
+            };
+        })();
     </script>
 
     @stack('scripts')
