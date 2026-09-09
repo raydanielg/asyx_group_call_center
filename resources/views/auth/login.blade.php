@@ -110,7 +110,6 @@
                         @enderror
                     </div>
 
-                    {{-- Remember + Forgot --}}
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-2 cursor-pointer group">
                             <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}
@@ -125,7 +124,6 @@
                         @endif
                     </div>
 
-                    {{-- Submit --}}
                     <button id="loginButton" type="submit"
                         class="w-full py-3.5 text-sm font-bold text-white bg-gradient-to-r from-navy-600 to-navy-700 hover:from-navy-700 hover:to-navy-800 rounded-xl shadow-lg shadow-navy-600/20 hover:shadow-xl hover:shadow-navy-600/30 transition-all flex items-center justify-center gap-2">
                         <!-- original icon (hidden when loading) -->
@@ -134,7 +132,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                         </svg>
-                        <!-- spinner shown when submitting -->
+
                         <svg class="w-5 h-5 animate-spin spinner hidden" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -145,7 +143,6 @@
                     </button>
                 </form>
 
-                {{-- Divider --}}
                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-gray-100"></div>
@@ -162,8 +159,6 @@
                 @endif
             </div>
         </div>
-
-        {{-- Footer --}}
         <p class="mt-6 text-center text-xs text-white/60 font-medium">&copy; {{ date('Y') }} AYS Call Center. All
             rights reserved.</p>
     </div>
@@ -183,7 +178,7 @@
                 eyeClosed.classList.add('hidden');
             }
         }
-        // Show loading state when login form is submitted
+
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('loginForm');
             if (!form) return;
@@ -194,9 +189,7 @@
             const text = btn.querySelector('.btn-text');
 
             form.addEventListener('submit', function(e) {
-                // prevent double submit UI flips if already disabled
                 if (btn.disabled) return;
-                // disable only buttons to keep input values sent with the form
                 btn.disabled = true;
                 Array.from(form.querySelectorAll('button')).forEach(el => el.disabled = true);
                 if (icon) icon.classList.add('hidden');
