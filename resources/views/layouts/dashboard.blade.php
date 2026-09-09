@@ -818,10 +818,14 @@
 
             const origClose = window.closeModal;
             window.closeModal = function(id) {
-                if (id === 'markAttendanceModal') {
-                    const drawer = document.getElementById('markAttendanceDrawer');
+                const modal = document.getElementById(id);
+                if (!modal) return;
+                const drawer = modal.querySelector('[id$="Drawer"]');
+                if (drawer && drawer.classList.contains('translate-x-full') === false) {
                     drawer.classList.add('translate-x-full');
-                    setTimeout(() => { document.getElementById(id).classList.add('hidden'); }, 300);
+                    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+                } else if (typeof window.closeShiftModal === 'function' && id === 'modal-shift') {
+                    window.closeShiftModal();
                 } else {
                     origClose(id);
                 }

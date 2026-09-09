@@ -98,7 +98,7 @@
 
 {{-- Create / Edit Modal --}}
 <div id="modal-shift" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-shift-title">
-    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeModal('modal-shift')"></div>
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeShiftModal()"></div>
     <div class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-out" id="shiftDrawer">
         {{-- Header --}}
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
