@@ -2,26 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<style>
-body { font-family: sans-serif; font-size: 12px; color: #1A2332; margin: 20px; }
-.header { text-align: center; border-bottom: 3px solid #0D3E63; padding-bottom: 10px; margin-bottom: 20px; }
-.header h1 { color: #0D3E63; font-size: 20px; margin: 0; }
-.header p { color: #666; font-size: 11px; margin: 4px 0 0; }
-.summary { display: flex; gap: 10px; margin-bottom: 20px; }
-.card { border: 1px solid #ddd; border-radius: 8px; padding: 10px; flex: 1; text-align: center; }
-.card .label { font-size: 9px; text-transform: uppercase; color: #888; }
-.card .value { font-size: 18px; font-weight: bold; margin-top: 4px; }
-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-th { background: #0D3E63; color: #fff; padding: 8px; text-align: left; font-size: 11px; }
-td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 11px; }
-h2 { color: #0D3E63; font-size: 14px; margin: 15px 0 8px; }
-</style>
+@include('reports.exports.partials.style', ['docTitle' => 'Recruitment Report', 'docCode' => 'REC'])
 </head>
 <body>
-<div class="header">
-    <h1>AYS Call Center — Recruitment Report</h1>
-    <p>Generated: {{ now()->format('M d, Y H:i') }}</p>
-</div>
+
+@include('reports.exports.partials.letterhead', [
+    'title' => 'Recruitment Report',
+    'subtitle' => 'As of ' . now()->format('d M Y'),
+    'docCode' => 'REC',
+])
 
 <div class="summary">
     <div class="card"><div class="label">Total Applicants</div><div class="value">{{ $totalApplicants }}</div></div>
@@ -31,28 +20,33 @@ h2 { color: #0D3E63; font-size: 14px; margin: 15px 0 8px; }
     <div class="card"><div class="label">Conversion Rate</div><div class="value" style="color:#0D3E63">{{ $conversionRate }}%</div></div>
 </div>
 
-<h2>Job Positions</h2>
-<table>
-<tr><th>Title</th><th>Openings</th><th>Applicants</th><th>Status</th></tr>
-@foreach($jobs as $job)
-<tr><td>{{ $job->title }}</td><td>{{ $job->openings }}</td><td>{{ $job->applicants_count }}</td><td>{{ ucfirst($job->status) }}</td></tr>
-@endforeach
+<h2 class="section-title">1. Open Job Positions</h2>
+<table class="data-table">
+<tr><th>Job Title</th><th style="text-align:right">Openings</th><th style="text-align:right">Applicants</th><th>Status</th></tr>
+@forelse($jobs as $job)
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ $job->title }}</td><td style="text-align:right">{{ $job->openings }}</td><td style="text-align:right">{{ $job->applicants_count }}</td><td>{{ ucfirst($job->status) }}</td></tr>
+@empty
+<tr><td colspan="4" style="text-align:center;color:#8B93A3">No job positions found</td></tr>
+@endforelse
 </table>
 
-<h2>By Source</h2>
-<table>
-<tr><th>Source</th><th>Count</th></tr>
+<h2 class="section-title">2. Applicants by Source</h2>
+<table class="data-table">
+<tr><th>Source</th><th style="text-align:right">Applicants</th></tr>
 @foreach($bySource as $source => $count)
-<tr><td>{{ $source ?? 'Unknown' }}</td><td>{{ $count }}</td></tr>
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ $source ?? 'Unknown' }}</td><td style="text-align:right">{{ $count }}</td></tr>
 @endforeach
 </table>
 
-<h2>By Stage</h2>
-<table>
-<tr><th>Stage</th><th>Count</th></tr>
+<h2 class="section-title">3. Applicants by Pipeline Stage</h2>
+<table class="data-table">
+<tr><th>Stage</th><th style="text-align:right">Applicants</th></tr>
 @foreach($byStage as $stage => $count)
-<tr><td>{{ ucfirst(str_replace('_',' ',$stage)) }}</td><td>{{ $count }}</td></tr>
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ ucfirst(str_replace('_',' ',$stage)) }}</td><td style="text-align:right">{{ $count }}</td></tr>
 @endforeach
 </table>
+
+@include('reports.exports.partials.signoff')
+
 </body>
 </html>

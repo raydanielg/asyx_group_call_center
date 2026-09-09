@@ -194,13 +194,39 @@ class ReportController extends Controller
     // EXPORT HELPERS
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    private function exportPdf(string $view, array $data, string $filename)
+    private function exportPdf(string $view, array $data, string $filename, string $orientation = 'landscape')
     {
         $pdf = Pdf::loadView($view, $data);
-        $pdf->setPaper('a4', 'landscape');
-        return response()->streamDownload(fn() => print($pdf->output()), $filename . '.pdf', [
+        $pdf->setPaper('a4', $orientation);
+
+        $dompdf = $pdf->getDomPDF();
+        $dompdf->render();
+        $this->stampPageNumbers($dompdf);
+
+        return response()->streamDownload(fn() => print($dompdf->output()), $filename . '.pdf', [
             'Content-Type' => 'application/pdf',
         ]);
+    }
+
+    /**
+     * Draws a "Page X of Y" stamp in the footer of every page. DomPDF cannot
+     * resolve the total page count from CSS alone, so this must run after
+     * render() using the canvas's native page-text callback.
+     */
+    private function stampPageNumbers($dompdf): void
+    {
+        $canvas = $dompdf->getCanvas();
+        $metrics = $dompdf->getFontMetrics();
+        $font = $metrics->getFont('DejaVu Sans', 'bold');
+
+        $width = $canvas->get_width();
+        $height = $canvas->get_height();
+        $navy = [0.051, 0.243, 0.388];
+
+        $text = 'Page {PAGE_NUM} of {PAGE_COUNT}';
+        $textWidth = $metrics->getTextWidth('Page 000 of 000', $font, 8.5);
+
+        $canvas->page_text($width - 22.5 - $textWidth, $height - 22, $text, $font, 8.5, $navy);
     }
 
     private function exportExcel(array $headers, array $rows, string $filename)
@@ -642,10 +668,6 @@ class ReportController extends Controller
             ],
         ];
 
-        $pdf = Pdf::loadView('reports.exports.guide-pdf', $guideData);
-        $pdf->setPaper('a4', 'portrait');
-        return response()->streamDownload(fn() => print($pdf->output()), 'AYS-Call-Center-User-Guide.pdf', [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return $this->exportPdf('reports.exports.guide-pdf', $guideData, 'AYS-Call-Center-User-Guide', 'portrait');
     }
 }
