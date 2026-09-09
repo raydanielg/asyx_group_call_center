@@ -673,6 +673,72 @@
         initAjax();
     })();
     </script>
+    @stack('modals')
+
+    {{-- Mark Attendance Modal --}}
+    <div id="markAttendanceModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="markAttendanceTitle">
+        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeModal('markAttendanceModal')"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 id="markAttendanceTitle" class="text-sm font-bold text-gray-900">Mark Attendance</h3>
+                    <p id="markAttendanceEmpName" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button type="button" onclick="closeModal('markAttendanceModal')" class="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-colors" aria-label="Close modal">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="markAttendanceForm" action="{{ route('attendance.store') }}" method="POST" data-ajax data-close-modal="markAttendanceModal">
+                @csrf
+                <input type="hidden" name="employee_id" id="markAttEmpId">
+                <input type="hidden" name="date" id="markAttDate">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Check In</label>
+                        <input type="time" name="check_in" id="markAttCheckIn" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Check Out</label>
+                        <input type="time" name="check_out" id="markAttCheckOut" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Status</label>
+                    <select name="status" id="markAttStatus" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all">
+                        <option value="present">Present</option>
+                        <option value="late">Late</option>
+                        <option value="absent">Absent</option>
+                        <option value="half_day">Half Day</option>
+                        <option value="on_leave">On Leave</option>
+                        <option value="off">Off</option>
+                        <option value="holiday">Holiday</option>
+                    </select>
+                </div>
+                <div class="mb-5">
+                    <label class="text-[10px] font-medium text-gray-500 uppercase mb-1.5">Remarks</label>
+                    <textarea name="remarks" id="markAttRemarks" rows="2" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-navy-300 focus:ring-2 focus:ring-navy-100 transition-all resize-none" placeholder="Optional notes..."></textarea>
+                </div>
+                <div class="flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeModal('markAttendanceModal')" class="px-4 py-2 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium text-white bg-navy-600 hover:bg-navy-700 rounded-xl transition-colors">Save Attendance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        window.openMarkAttendance = function(empId, empName, date, existingCheckIn, existingCheckOut, existingStatus, existingRemarks) {
+            document.getElementById('markAttEmpId').value = empId;
+            document.getElementById('markAttDate').value = date;
+            document.getElementById('markAttendanceEmpName').textContent = empName + ' · ' + date;
+            document.getElementById('markAttCheckIn').value = existingCheckIn || '';
+            document.getElementById('markAttCheckOut').value = existingCheckOut || '';
+            document.getElementById('markAttStatus').value = existingStatus || 'present';
+            document.getElementById('markAttRemarks').value = existingRemarks || '';
+            openModal('markAttendanceModal');
+        };
+    </script>
+
     @stack('scripts')
 </body>
 </html>

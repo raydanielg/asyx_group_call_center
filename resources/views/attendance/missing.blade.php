@@ -115,10 +115,10 @@
                         @endif
                     </td>
                     <td class="px-5 py-3 text-right">
-                        <a href="{{ route('attendance.index', ['date' => $date, 'department_id' => $departmentId]) }}" class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-lg border border-navy-100 transition-colors" aria-label="Mark attendance for {{ $emp->first_name }} {{ $emp->last_name }}">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <button type="button" onclick="openMarkAttendance({{ $emp->id }}, '{{ addslashes($emp->first_name . ' ' . $emp->last_name) }}', '{{ $date }}')" class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-xl border border-navy-100 transition-colors" aria-label="Mark attendance for {{ $emp->first_name }} {{ $emp->last_name }}">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             Mark
-                        </a>
+                        </button>
                     </td>
                 </tr>
                 @empty
@@ -142,9 +142,9 @@
     @if($missing->count() > 0)
     <div class="px-5 py-3 border-t border-gray-100 bg-gray-50/30 flex items-center justify-between">
         <span class="text-xs text-gray-500">Showing {{ $missing->count() }} of {{ $totalActive }} active employees</span>
-        <a href="{{ route('attendance.index', ['date' => $date, 'department_id' => $departmentId]) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-navy-600 hover:bg-navy-700 rounded-lg transition-colors">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Go to Daily Grid
+        <a href="{{ route('attendance.index', ['date' => $date, 'department_id' => $departmentId]) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-navy-600 hover:bg-navy-700 rounded-xl transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            Daily Grid
         </a>
     </div>
     @endif

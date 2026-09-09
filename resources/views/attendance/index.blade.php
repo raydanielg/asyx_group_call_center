@@ -148,8 +148,9 @@
                         @endif
                     </td>
                     <td class="px-5 py-3 text-right">
-                        @if($rec && $rec->overtime_minutes > 0)
-                            <span class="inline-flex items-center gap-1.5">
+                        <div class="inline-flex items-center gap-2">
+                            @if($rec && $rec->overtime_minutes > 0)
+                            <span class="inline-flex items-center gap-1">
                                 <span class="text-xs font-medium text-copper-600">{{ $rec->overtime_minutes }}m</span>
                                 @if(!$rec->overtime_approved)
                                 <form method="POST" action="{{ route('attendance.approve-overtime', $rec) }}" class="inline" data-ajax data-confirm="Approve this overtime?">
@@ -162,9 +163,14 @@
                                 </span>
                                 @endif
                             </span>
-                        @else
+                            @else
                             <span class="text-gray-300 text-xs">—</span>
-                        @endif
+                            @endif
+                            <button type="button" onclick="openMarkAttendance({{ $emp->id }}, '{{ addslashes($emp->first_name . ' ' . $emp->last_name) }}', '{{ $date }}', '{{ $rec?->check_in?->format('H:i') }}', '{{ $rec?->check_out?->format('H:i') }}', '{{ $rec?->status }}', '{{ addslashes($rec?->remarks ?? '') }}')" class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-xl border border-navy-100 transition-colors" aria-label="Mark attendance for {{ $emp->first_name }} {{ $emp->last_name }}">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                {{ $rec ? 'Edit' : 'Mark' }}
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @empty
