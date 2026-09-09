@@ -168,6 +168,7 @@ class AttendanceController extends Controller
                 'present' => $group->where('status', 'present')->count(),
                 'late' => $group->where('status', 'late')->count(),
                 'absent' => $group->where('status', 'absent')->count(),
+                'half_day' => $group->where('status', 'half_day')->count(),
                 'ot_minutes' => $group->sum('overtime_minutes'),
             ];
         })->values();
