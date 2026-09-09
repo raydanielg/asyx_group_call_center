@@ -3,51 +3,50 @@
 <head>
 <meta charset="utf-8">
 <style>
-body { font-family: sans-serif; font-size: 12px; color: #1A2332; margin: 20px; }
-.header { text-align: center; border-bottom: 3px solid #0D3E63; padding-bottom: 10px; margin-bottom: 20px; }
-.header h1 { color: #0D3E63; font-size: 20px; margin: 0; }
-.header p { color: #666; font-size: 11px; margin: 4px 0 0; }
-.summary { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.card { border: 1px solid #ddd; border-radius: 8px; padding: 10px; flex: 1; text-align: center; min-width: 100px; }
-.card .label { font-size: 9px; text-transform: uppercase; color: #888; }
-.card .value { font-size: 18px; font-weight: bold; margin-top: 4px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; color: #2d3748; margin: 30px; line-height: 1.5; }
+.header { border-bottom: 2px solid #0D3E63; padding-bottom: 12px; margin-bottom: 20px; }
+.header .title { font-size: 18px; font-weight: 700; color: #0D3E63; }
+.header .meta { font-size: 10px; color: #718096; margin-top: 4px; }
+.section { margin-bottom: 22px; }
+.section-title { font-size: 12px; font-weight: 700; color: #0D3E63; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
 table { width: 100%; border-collapse: collapse; }
-th { background: #0D3E63; color: #fff; padding: 8px; text-align: left; font-size: 11px; }
-td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 11px; }
+th { background: #0D3E63; color: #fff; padding: 7px 10px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 6px 10px; border-bottom: 1px solid #edf2f7; font-size: 10px; }
+tr:nth-child(even) td { background: #f7fafc; }
+.text-right { text-align: right; }
+.footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #a0aec0; text-align: center; }
 </style>
 </head>
 <body>
+
 <div class="header">
-    <h1>AYS Call Center — Call Center Report</h1>
-    <p>Period: {{ $from }} to {{ $to }} | Generated: {{ now()->format('M d, Y H:i') }}</p>
+    <div class="title">AYS Call Center &mdash; Call Center Report</div>
+    <div class="meta">Period: {{ $from }} to {{ $to }} | Generated: {{ now()->format('M d, Y H:i') }}</div>
 </div>
 
-<div class="summary">
-    <div class="card"><div class="label">Total Calls</div><div class="value">{{ $summary['total_calls'] }}</div></div>
-    <div class="card"><div class="label">Answered</div><div class="value" style="color:#16a34a">{{ $summary['answered'] }}</div></div>
-    <div class="card"><div class="label">Missed</div><div class="value" style="color:#dc2626">{{ $summary['missed'] }}</div></div>
-    <div class="card"><div class="label">Conversions</div><div class="value" style="color:#A56035">{{ $summary['conversions'] }}</div></div>
-    <div class="card"><div class="label">Avg AHT (s)</div><div class="value">{{ $summary['avg_aht'] }}</div></div>
-    <div class="card"><div class="label">Avg CSAT</div><div class="value" style="color:#632871">{{ $summary['avg_csat'] }}</div></div>
+<div class="section">
+    <div class="section-title">By Employee</div>
+    <table>
+        <tr>
+            <th>Employee</th>
+            <th class="text-right">Calls</th>
+            <th class="text-right">AHT (s)</th>
+            <th class="text-right">CSAT</th>
+            <th class="text-right">Conversions</th>
+        </tr>
+        @foreach($byEmployee as $row)
+        <tr>
+            <td>{{ $row['employee']?->first_name ?? '' }} {{ $row['employee']?->last_name ?? '' }}</td>
+            <td class="text-right">{{ $row['calls'] }}</td>
+            <td class="text-right">{{ $row['aht'] }}</td>
+            <td class="text-right">{{ $row['csat'] }}</td>
+            <td class="text-right">{{ $row['conversions'] }}</td>
+        </tr>
+        @endforeach
+    </table>
 </div>
 
-<table>
-<tr>
-    <th>Employee</th>
-    <th style="text-align:right">Calls</th>
-    <th style="text-align:right">AHT (s)</th>
-    <th style="text-align:right">CSAT</th>
-    <th style="text-align:right">Conversions</th>
-</tr>
-@foreach($byEmployee as $row)
-<tr>
-    <td>{{ $row['employee']?->first_name ?? '' }} {{ $row['employee']?->last_name ?? '' }}</td>
-    <td style="text-align:right">{{ $row['calls'] }}</td>
-    <td style="text-align:right">{{ $row['aht'] }}</td>
-    <td style="text-align:right">{{ $row['csat'] }}</td>
-    <td style="text-align:right">{{ $row['conversions'] }}</td>
-</tr>
-@endforeach
-</table>
+<div class="footer">AYS Call Center HRMS &mdash; Confidential</div>
 </body>
 </html>

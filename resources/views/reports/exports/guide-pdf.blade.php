@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <style>
-body { font-family: sans-serif; font-size: 12px; color: #1A2332; margin: 25px; line-height: 1.6; }
-.cover { text-align: center; padding: 60px 0; border-bottom: 3px solid #0D3E63; margin-bottom: 30px; }
-.cover h1 { color: #0D3E63; font-size: 28px; margin: 0; }
-.cover p { color: #666; font-size: 13px; margin: 8px 0 0; }
-h1 { color: #0D3E63; font-size: 20px; margin: 25px 0 10px; border-bottom: 2px solid #A56035; padding-bottom: 5px; }
-h2 { color: #A56035; font-size: 16px; margin: 20px 0 8px; }
-h3 { color: #0D3E63; font-size: 13px; margin: 15px 0 5px; }
-.role { border: 1px solid #ddd; border-radius: 10px; padding: 15px 20px; margin-bottom: 20px; page-break-inside: avoid; }
-.role-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.role-badge { background: #0D3E63; color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-.permissions { background: #f8f9fb; border-radius: 8px; padding: 10px 15px; margin: 10px 0; }
-.permissions ul { margin: 5px 0; padding-left: 20px; }
-.permissions li { font-size: 11px; color: #555; margin: 3px 0; }
-ol { margin: 5px 0; padding-left: 25px; }
-ol li { font-size: 11px; color: #444; margin: 4px 0; }
-.toc { background: #f8f9fb; border-radius: 10px; padding: 15px 25px; margin-bottom: 25px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; color: #2d3748; margin: 30px; line-height: 1.6; }
+.cover { text-align: center; padding: 50px 0; border-bottom: 2px solid #0D3E63; margin-bottom: 25px; }
+.cover h1 { color: #0D3E63; font-size: 24px; font-weight: 700; }
+.cover p { color: #718096; font-size: 12px; margin-top: 6px; }
+h1 { color: #0D3E63; font-size: 16px; font-weight: 700; margin: 22px 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+h2 { color: #A56035; font-size: 13px; font-weight: 600; margin: 16px 0 6px; }
+h3 { color: #0D3E63; font-size: 12px; font-weight: 600; margin: 12px 0 4px; }
+.role { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; page-break-inside: avoid; }
+.role-badge { background: #0D3E63; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; display: inline-block; margin-bottom: 8px; }
+.permissions { background: #f7fafc; border-radius: 6px; padding: 8px 14px; margin: 8px 0; }
+.permissions ul { margin: 4px 0; padding-left: 18px; }
+.permissions li { font-size: 10px; color: #4a5568; margin: 2px 0; }
+ol { margin: 4px 0; padding-left: 22px; }
+ol li { font-size: 10px; color: #4a5568; margin: 3px 0; }
+.toc { background: #f7fafc; border-radius: 8px; padding: 12px 22px; margin-bottom: 20px; }
 .toc h2 { margin-top: 0; }
-.toc ol li { font-size: 12px; margin: 6px 0; }
+.toc ol li { font-size: 11px; margin: 4px 0; }
+.footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #a0aec0; text-align: center; }
 </style>
 </head>
 <body>
@@ -42,9 +43,7 @@ ol li { font-size: 11px; color: #444; margin: 4px 0; }
 
 @foreach($roles as $role)
 <div class="role">
-    <div class="role-header">
-        <span class="role-badge">{{ $role['name'] }}</span>
-    </div>
+    <span class="role-badge">{{ $role['name'] }}</span>
     <p>{{ $role['description'] }}</p>
 
     <h3>Permissions</h3>
@@ -67,5 +66,6 @@ ol li { font-size: 11px; color: #444; margin: 4px 0; }
 </div>
 @endforeach
 
+<div class="footer">AYS Call Center HRMS &mdash; Confidential</div>
 </body>
 </html>
