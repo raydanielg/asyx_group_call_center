@@ -138,7 +138,21 @@
 @push('scripts')
 <script>
 (function() {
-    const shiftsData = @json($shifts->map(fn($s) => ['id' => $s->id, 'name' => $s->name, 'code' => $s->code, 'start_time' => $s->start_time, 'end_time' => $s->end_time, 'break_minutes' => $s->break_minutes, 'grace_minutes' => $s->grace_minutes, 'color' => $s->color, 'is_night_shift' => $s->is_night_shift, 'is_active' => $s->is_active]));
+    @php
+        $shiftsJson = $shifts->map(fn($s) => [
+            'id' => $s->id,
+            'name' => $s->name,
+            'code' => $s->code,
+            'start_time' => $s->start_time,
+            'end_time' => $s->end_time,
+            'break_minutes' => $s->break_minutes,
+            'grace_minutes' => $s->grace_minutes,
+            'color' => $s->color,
+            'is_night_shift' => $s->is_night_shift,
+            'is_active' => $s->is_active,
+        ])->toJson();
+    @endphp
+    const shiftsData = {!! $shiftsJson !!};
     const editForm = document.getElementById('form-shift-edit');
     const createForm = document.getElementById('form-shift-create');
     const modalTitle = document.getElementById('modal-shift-title');
