@@ -21,7 +21,7 @@
     <div class="bg-white rounded-2xl p-5 hover:shadow-md transition-shadow" id="shift-card-{{ $shift->id }}">
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2.5">
-                <span class="w-5 h-5 rounded-lg" style="background-color: {{ $shift->color ?? '#0D3E63' }}"></span>
+                <span class="w-2 h-8 rounded-full" style="background-color: {{ $shift->color ?? '#0D3E63' }}"></span>
                 <div>
                     <h3 class="text-sm font-bold text-gray-900">{{ $shift->name }}</h3>
                     <span class="text-[10px] text-gray-400 font-mono">{{ $shift->code }}</span>
@@ -29,52 +29,38 @@
             </div>
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium {{ $shift->is_active ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500' }}">{{ $shift->is_active ? 'Active' : 'Inactive' }}</span>
         </div>
-        <div class="space-y-2">
-            <div class="flex items-center gap-2 text-xs">
-                <div class="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs mb-1">
+            <div class="flex items-center justify-between">
                 <span class="text-gray-400">Start</span>
-                <span class="font-medium text-gray-700 ml-auto font-mono">{{ \Carbon\Carbon::parse($shift->start_time)->format('H:i') }}</span>
+                <span class="font-medium text-gray-700 font-mono">{{ \Carbon\Carbon::parse($shift->start_time)->format('H:i') }}</span>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-                <div class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+            <div class="flex items-center justify-between">
                 <span class="text-gray-400">End</span>
-                <span class="font-medium text-gray-700 ml-auto font-mono">{{ \Carbon\Carbon::parse($shift->end_time)->format('H:i') }}</span>
+                <span class="font-medium text-gray-700 font-mono">{{ \Carbon\Carbon::parse($shift->end_time)->format('H:i') }}</span>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-                <div class="w-7 h-7 rounded-lg bg-copper-50 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-copper-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                </div>
+            <div class="flex items-center justify-between">
                 <span class="text-gray-400">Break</span>
-                <span class="font-medium text-gray-700 ml-auto">{{ $shift->break_minutes ?? 0 }} min</span>
+                <span class="font-medium text-gray-700">{{ $shift->break_minutes ?? 0 }}m</span>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-                <div class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+            <div class="flex items-center justify-between">
                 <span class="text-gray-400">Grace</span>
-                <span class="font-medium text-gray-700 ml-auto">{{ $shift->grace_minutes ?? 0 }} min</span>
+                <span class="font-medium text-gray-700">{{ $shift->grace_minutes ?? 0 }}m</span>
             </div>
-            @if($shift->is_night_shift)
-            <div class="flex items-center gap-2 text-xs pt-1">
-                <div class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                </div>
-                <span class="text-indigo-600 font-medium">Night Shift</span>
-            </div>
-            @endif
         </div>
+        @if($shift->is_night_shift)
+        <div class="inline-flex items-center gap-1 mt-1 text-[10px] text-indigo-600 font-medium">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            Night Shift
+        </div>
+        @endif
         <div class="flex items-center gap-2 mt-4 pt-4 border-t border-gray-50">
-            <button type="button" onclick="openEditShift({{ $shift->id }})" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-xl transition-colors">
+            <button type="button" onclick="openEditShift({{ $shift->id }})" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 Edit
             </button>
-            <form method="POST" action="{{ route('shifts.destroy', $shift) }}" class="inline" data-ajax data-confirm="Delete this shift?" data-confirm-text="This shift will be permanently removed." data-row-id="shift-card-{{ $shift->id }}">
+            <form method="POST" action="{{ route('shifts.destroy', $shift) }}" class="inline" data-ajax data-confirm="Delete {{ $shift->name }}?" data-confirm-text="This shift will be permanently removed and cannot be undone." data-row-id="shift-card-{{ $shift->id }}">
                 @csrf @method('DELETE')
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-500 bg-gray-50 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     Delete
                 </button>
