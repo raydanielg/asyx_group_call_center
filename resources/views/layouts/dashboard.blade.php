@@ -40,12 +40,12 @@
         ::-webkit-scrollbar-thumb:hover { background: #A56035; }
         .card-sm { transition: all 0.2s cubic-bezier(0.4,0,0.2,1); }
         .card-sm:hover { transform: translateY(-2px); box-shadow: 0 8px 30px -8px rgba(0,0,0,0.1); }
-        .swal2-popup { font-family: 'Nunito', sans-serif !important; border-radius: 12px !important; }
+        .swal2-popup { font-family: 'Nunito', sans-serif !important; border-radius: 16px !important; padding: 24px !important; }
         .swal2-toast { font-family: 'Nunito', sans-serif !important; border-radius: 10px !important; box-shadow: 0 4px 24px rgba(0,0,0,0.12) !important; }
-        .swal2-icon { border-radius: 50% !important; }
-        .swal2-title { font-size: 14px !important; font-weight: 700 !important; padding: 0 !important; }
-        .swal2-html-container { font-size: 12px !important; margin: 0 !important; }
-        .swal2-confirm { border-radius: 8px !important; font-weight: 700 !important; font-size: 12px !important; padding: 6px 16px !important; }
+        .swal2-icon { border-radius: 50% !important; margin: 0 auto 12px !important; }
+        .swal2-title { font-size: 15px !important; font-weight: 700 !important; padding: 0 !important; }
+        .swal2-html-container { font-size: 13px !important; margin: 4px 0 0 0 !important; color: #6b7280 !important; }
+        .swal2-confirm { border-radius: 12px !important; font-weight: 600 !important; font-size: 13px !important; padding: 10px 24px !important; transition: all 0.2s !important; }
         *:focus-visible { outline: 2px solid #A56035; outline-offset: 2px; border-radius: 4px; }
         .skip-link { position: absolute; top: -40px; left: 0; background: #0D3E63; color: #fff; padding: 8px 16px; z-index: 100; border-radius: 0 0 8px 0; text-decoration: none; font-size: 13px; transition: top 0.2s; }
         .skip-link:focus { top: 0; }
@@ -396,8 +396,8 @@
         const ConfirmMixin = Swal.mixin({
             customClass: {
                 popup: 'swal2-popup',
-                confirmButton: 'swal2-confirm bg-red-500 hover:bg-red-600 text-white',
-                cancelButton: 'swal2-confirm bg-gray-200 hover:bg-gray-300 text-gray-700'
+                confirmButton: 'swal2-confirm bg-red-50 hover:bg-red-100 text-red-600 border border-red-200',
+                cancelButton: 'swal2-confirm bg-white hover:bg-gray-50 text-gray-600 border border-gray-200'
             },
             buttonsStyling: false,
         });
@@ -446,8 +446,8 @@
                 cancelButtonText: options.cancelText || 'Cancel',
                 customClass: {
                     popup: 'swal2-popup',
-                    confirmButton: 'swal2-confirm ' + (options.confirmClass || 'bg-red-500 hover:bg-red-600 text-white'),
-                    cancelButton: 'swal2-confirm bg-gray-200 hover:bg-gray-300 text-gray-700'
+                    confirmButton: 'swal2-confirm ' + (options.confirmClass || 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200'),
+                    cancelButton: 'swal2-confirm bg-white hover:bg-gray-50 text-gray-600 border border-gray-200'
                 },
                 buttonsStyling: false,
                 reverseButtons: true,
