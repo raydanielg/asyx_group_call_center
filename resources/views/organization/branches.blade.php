@@ -44,18 +44,22 @@
                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium {{ $branch->is_active ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-gray-50 text-gray-500 border border-gray-100' }}">{{ $branch->is_active ? 'Active' : 'Inactive' }}</span>
                             </td>
                             <td class="px-5 py-3 text-right">
+                                @php
+                                    $branchPayload = [
+                                        'id' => $branch->id,
+                                        'name' => $branch->name,
+                                        'code' => $branch->code,
+                                        'address' => $branch->address,
+                                        'city' => $branch->city,
+                                        'country' => $branch->country,
+                                        'phone' => $branch->phone,
+                                        'timezone' => $branch->timezone,
+                                        'is_active' => (bool) $branch->is_active,
+                                    ];
+                                @endphp
                                 <button type="button" class="mr-3 text-xs text-navy-600 hover:text-navy-700 font-medium"
-                                    onclick='openBranchEditModal(@js([
-    'id' => $branch->id,
-    'name' => $branch->name,
-    'code' => $branch->code,
-    'address' => $branch->address,
-    'city' => $branch->city,
-    'country' => $branch->country,
-    'phone' => $branch->phone,
-    'timezone' => $branch->timezone,
-    'is_active' => (bool) $branch->is_active,
-]))'>
+                                    data-branch='{{ json_encode($branchPayload, JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_TAG) }}'
+                                    onclick="openBranchEditModal(this)">
                                     Edit
                                 </button>
                                 <form method="POST" action="{{ route('organization.branches.destroy', $branch) }}"
@@ -189,9 +193,11 @@
     </div>
 
     <script>
-        function openBranchEditModal(branch) {
+        window.openBranchEditModal = function(button) {
             const form = document.getElementById('branch-edit-form');
             if (!form) return;
+
+            const branch = JSON.parse(button.getAttribute('data-branch') || '{}');
 
             form.action = `{{ url('/organization/branches') }}/${branch.id}`;
             document.getElementById('edit-branch-name').value = branch.name ?? '';
