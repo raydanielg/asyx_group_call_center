@@ -2,69 +2,60 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; color: #2d3748; margin: 30px; line-height: 1.5; }
-.header { border-bottom: 2px solid #0D3E63; padding-bottom: 12px; margin-bottom: 20px; }
-.header .title { font-size: 18px; font-weight: 700; color: #0D3E63; }
-.header .meta { font-size: 10px; color: #718096; margin-top: 4px; }
-.section { margin-bottom: 22px; }
-.section-title { font-size: 12px; font-weight: 700; color: #0D3E63; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
-table { width: 100%; border-collapse: collapse; }
-th { background: #0D3E63; color: #fff; padding: 7px 10px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-td { padding: 6px 10px; border-bottom: 1px solid #edf2f7; font-size: 10px; }
-tr:nth-child(even) td { background: #f7fafc; }
-.text-right { text-align: right; }
-.footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #a0aec0; text-align: center; }
-</style>
+@include('reports.exports.partials.style', ['docTitle' => 'Employee Report', 'docCode' => 'EMP'])
 </head>
 <body>
 
-<div class="header">
-    <div class="title">AYS Call Center &mdash; Employee Report</div>
-    <div class="meta">Period: {{ $from }} to {{ $to }} | Generated: {{ now()->format('M d, Y H:i') }}</div>
+@include('reports.exports.partials.letterhead', [
+    'title' => 'Employee Report',
+    'subtitle' => 'Reporting Period: ' . \Carbon\Carbon::parse($from)->format('d M Y') . ' — ' . \Carbon\Carbon::parse($to)->format('d M Y'),
+    'docCode' => 'EMP',
+])
+
+<div class="summary">
+    <div class="card"><div class="label">Total Employees</div><div class="value">{{ $total }}</div></div>
+    <div class="card"><div class="label">Active</div><div class="value" style="color:#16a34a">{{ $active }}</div></div>
+    <div class="card"><div class="label">On Probation</div><div class="value" style="color:#d97706">{{ $onProbation }}</div></div>
+    <div class="card"><div class="label">Terminated</div><div class="value" style="color:#dc2626">{{ $terminated }}</div></div>
 </div>
 
-<div class="section">
-    <div class="section-title">By Department</div>
-    <table>
-        <tr><th>Department</th><th class="text-right">Count</th></tr>
-        @foreach($byDept as $dept => $count)
-        <tr><td>{{ $dept }}</td><td class="text-right">{{ $count }}</td></tr>
-        @endforeach
-    </table>
-</div>
+<h2 class="section-title">1. Headcount by Department</h2>
+<table class="data-table">
+<tr><th>Department</th><th style="text-align:right">Employees</th></tr>
+@foreach($byDept as $dept => $count)
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ $dept }}</td><td style="text-align:right">{{ $count }}</td></tr>
+@endforeach
+</table>
 
-<div class="section">
-    <div class="section-title">By Employment Type</div>
-    <table>
-        <tr><th>Type</th><th class="text-right">Count</th></tr>
-        @foreach($byType as $type => $count)
-        <tr><td>{{ ucfirst(str_replace('_',' ',$type)) }}</td><td class="text-right">{{ $count }}</td></tr>
-        @endforeach
-    </table>
-</div>
+<h2 class="section-title">2. Headcount by Employment Type</h2>
+<table class="data-table">
+<tr><th>Employment Type</th><th style="text-align:right">Employees</th></tr>
+@foreach($byType as $type => $count)
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ ucfirst(str_replace('_',' ',$type)) }}</td><td style="text-align:right">{{ $count }}</td></tr>
+@endforeach
+</table>
 
-<div class="section">
-    <div class="section-title">New Joiners ({{ $joiners->count() }})</div>
-    <table>
-        <tr><th>Code</th><th>Name</th><th>Hire Date</th></tr>
-        @foreach($joiners as $j)
-        <tr><td>{{ $j->employee_code }}</td><td>{{ $j->first_name }} {{ $j->last_name }}</td><td>{{ $j->hire_date?->format('M d, Y') }}</td></tr>
-        @endforeach
-    </table>
-</div>
+<h2 class="section-title">3. New Joiners ({{ $joiners->count() }})</h2>
+<table class="data-table">
+<tr><th>Employee Code</th><th>Full Name</th><th>Hire Date</th></tr>
+@forelse($joiners as $j)
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ $j->employee_code }}</td><td>{{ $j->first_name }} {{ $j->last_name }}</td><td>{{ $j->hire_date?->format('d M Y') }}</td></tr>
+@empty
+<tr><td colspan="3" style="text-align:center;color:#8B93A3">No new joiners in this period</td></tr>
+@endforelse
+</table>
 
-<div class="section">
-    <div class="section-title">Leavers ({{ $leavers->count() }})</div>
-    <table>
-        <tr><th>Code</th><th>Name</th><th>Status</th></tr>
-        @foreach($leavers as $l)
-        <tr><td>{{ $l->employee_code }}</td><td>{{ $l->first_name }} {{ $l->last_name }}</td><td>{{ ucfirst(str_replace('_',' ',$l->employment_status)) }}</td></tr>
-        @endforeach
-    </table>
-</div>
+<h2 class="section-title">4. Leavers ({{ $leavers->count() }})</h2>
+<table class="data-table">
+<tr><th>Employee Code</th><th>Full Name</th><th>Status</th></tr>
+@forelse($leavers as $l)
+<tr class="{{ $loop->even ? 'row-alt' : '' }}"><td>{{ $l->employee_code }}</td><td>{{ $l->first_name }} {{ $l->last_name }}</td><td>{{ ucfirst(str_replace('_',' ',$l->employment_status)) }}</td></tr>
+@empty
+<tr><td colspan="3" style="text-align:center;color:#8B93A3">No leavers in this period</td></tr>
+@endforelse
+</table>
 
-<div class="footer">AYS Call Center HRMS &mdash; Confidential</div>
+@include('reports.exports.partials.signoff')
+
 </body>
 </html>

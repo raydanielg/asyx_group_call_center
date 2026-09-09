@@ -2,66 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; color: #2d3748; margin: 30px; line-height: 1.5; }
-.header { border-bottom: 2px solid #0D3E63; padding-bottom: 12px; margin-bottom: 20px; }
-.header .title { font-size: 18px; font-weight: 700; color: #0D3E63; }
-.header .meta { font-size: 10px; color: #718096; margin-top: 4px; }
-.section { margin-bottom: 22px; }
-.section-title { font-size: 12px; font-weight: 700; color: #0D3E63; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
-table { width: 100%; border-collapse: collapse; }
-th { background: #0D3E63; color: #fff; padding: 7px 10px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-td { padding: 6px 10px; border-bottom: 1px solid #edf2f7; font-size: 10px; }
-tr:nth-child(even) td { background: #f7fafc; }
-.text-right { text-align: right; }
-.footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9px; color: #a0aec0; text-align: center; }
-</style>
+@include('reports.exports.partials.style', ['docTitle' => 'Attendance Report', 'docCode' => 'ATT'])
 </head>
 <body>
 
-<div class="header">
-    <div class="title">AYS Call Center &mdash; Attendance Report</div>
-    <div class="meta">Period: {{ $from }} to {{ $to }} | Generated: {{ now()->format('M d, Y H:i') }}</div>
+@include('reports.exports.partials.letterhead', [
+    'title' => 'Attendance Report',
+    'subtitle' => 'Reporting Period: ' . \Carbon\Carbon::parse($from)->format('d M Y') . ' — ' . \Carbon\Carbon::parse($to)->format('d M Y'),
+    'docCode' => 'ATT',
+])
+
+<div class="summary">
+    <div class="card"><div class="label">Present</div><div class="value" style="color:#16a34a">{{ $summary['present'] }}</div></div>
+    <div class="card"><div class="label">Late</div><div class="value" style="color:#d97706">{{ $summary['late'] }}</div></div>
+    <div class="card"><div class="label">Absent</div><div class="value" style="color:#dc2626">{{ $summary['absent'] }}</div></div>
+    <div class="card"><div class="label">Half Day</div><div class="value" style="color:#0284c7">{{ $summary['half_day'] }}</div></div>
+    <div class="card"><div class="label">On Leave</div><div class="value" style="color:#632871">{{ $summary['on_leave'] }}</div></div>
+    <div class="card"><div class="label">Overtime (hrs)</div><div class="value" style="color:#A56035">{{ number_format($summary['total_ot'] / 60, 1) }}</div></div>
 </div>
 
-<div class="section">
-    <div class="section-title">Summary</div>
-    <table>
-        <tr><th>Present</th><th>Late</th><th>Absent</th><th>Half Day</th><th>On Leave</th><th>OT (hrs)</th></tr>
-        <tr>
-            <td>{{ $summary['present'] }}</td>
-            <td>{{ $summary['late'] }}</td>
-            <td>{{ $summary['absent'] }}</td>
-            <td>{{ $summary['half_day'] }}</td>
-            <td>{{ $summary['on_leave'] }}</td>
-            <td>{{ number_format($summary['total_ot'] / 60, 1) }}</td>
-        </tr>
-    </table>
-</div>
+<h2 class="section-title">Attendance by Employee</h2>
+<table class="data-table">
+<tr>
+    <th>Employee</th>
+    <th style="text-align:right">Present</th>
+    <th style="text-align:right">Late</th>
+    <th style="text-align:right">Absent</th>
+    <th style="text-align:right">Overtime (min)</th>
+</tr>
+@forelse($byEmployee as $row)
+<tr class="{{ $loop->even ? 'row-alt' : '' }}">
+    <td>{{ $row['employee']?->first_name ?? '' }} {{ $row['employee']?->last_name ?? '' }}</td>
+    <td style="text-align:right">{{ $row['present'] }}</td>
+    <td style="text-align:right">{{ $row['late'] }}</td>
+    <td style="text-align:right">{{ $row['absent'] }}</td>
+    <td style="text-align:right">{{ $row['ot_minutes'] }}</td>
+</tr>
+@empty
+<tr><td colspan="5" style="text-align:center;color:#8B93A3">No attendance records in this period</td></tr>
+@endforelse
+</table>
 
-<div class="section">
-    <div class="section-title">By Employee</div>
-    <table>
-        <tr>
-            <th>Employee</th>
-            <th class="text-right">Present</th>
-            <th class="text-right">Late</th>
-            <th class="text-right">Absent</th>
-            <th class="text-right">OT (min)</th>
-        </tr>
-        @foreach($byEmployee as $row)
-        <tr>
-            <td>{{ $row['employee']?->first_name ?? '' }} {{ $row['employee']?->last_name ?? '' }}</td>
-            <td class="text-right">{{ $row['present'] }}</td>
-            <td class="text-right">{{ $row['late'] }}</td>
-            <td class="text-right">{{ $row['absent'] }}</td>
-            <td class="text-right">{{ $row['ot_minutes'] }}</td>
-        </tr>
-        @endforeach
-    </table>
-</div>
+@include('reports.exports.partials.signoff')
 
-<div class="footer">AYS Call Center HRMS &mdash; Confidential</div>
 </body>
 </html>
